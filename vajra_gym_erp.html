@@ -235,6 +235,15 @@ button:hover{
   border:0;
   object-fit:cover;
 }
+.exercise-demo iframe{
+  background:white;
+}
+.embed-note{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:12px;
+}
 .exercise-placeholder{
   min-height:120px;
   display:flex;
@@ -1745,7 +1754,12 @@ function workoutGuideHtml(item){
     }else if(lowerUrl.endsWith('.mp4') || lowerUrl.endsWith('.webm') || lowerUrl.endsWith('.ogg')){
       media = `<div class="exercise-demo"><video src="${demoUrl}" controls playsinline preload="metadata"></video></div>`;
     }else{
-      media = `<a class="exercise-link" href="${demoUrl}" target="_blank" rel="noopener">Open Exercise Demo / Guide</a>`;
+      media = `
+        <div class="exercise-demo">
+          <iframe src="${demoUrl}" loading="lazy"></iframe>
+        </div>
+        <span class="embed-note">Demo loads inside this box when the source website allows embedding.</span>
+      `;
     }
   }
 
