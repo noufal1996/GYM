@@ -244,6 +244,12 @@ button:hover{
   color:var(--muted);
   font-size:12px;
 }
+.source-note{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:11px;
+}
 .exercise-placeholder{
   min-height:120px;
   display:flex;
@@ -1728,9 +1734,90 @@ function closeFullScreenTimer(){
   document.getElementById('fullScreenTimer').classList.add('hidden');
 }
 
+async function enrichWorkoutMedia(item){
+  const demoUrl = String(item.demo_url || '').trim();
+
+  if(isDirectPlayableDemo(demoUrl)){
+    return item;
+  }
+
+  const exercise = await findExerciseDbDemo(item.name);
+
+  if(!exercise?.gifUrl){
+    return item;
+  }
+
+  return {
+    ...item,
+    embedded_demo_url:exercise.gifUrl,
+    embedded_instructions:Array.isArray(exercise.instructions)
+      ? exercise.instructions.join(' ')
+      : ''
+  };
+}
+
+function isDirectPlayableDemo(url){
+  const lowerUrl = String(url || '').toLowerCase();
+
+  return lowerUrl.includes('youtube.com') ||
+    lowerUrl.includes('youtu.be') ||
+    lowerUrl.endsWith('.mp4') ||
+    lowerUrl.endsWith('.webm') ||
+    lowerUrl.endsWith('.ogg') ||
+    lowerUrl.endsWith('.gif') ||
+    lowerUrl.endsWith('.jpg') ||
+    lowerUrl.endsWith('.jpeg') ||
+    lowerUrl.endsWith('.png') ||
+    lowerUrl.endsWith('.webp');
+}
+
+async function findExerciseDbDemo(name){
+  const cleanedName = normalizeExerciseSearchName(name);
+  const cacheKey = `exerciseDb:${cleanedName}`;
+  const cached = sessionStorage.getItem(cacheKey);
+
+  if(cached){
+    return JSON.parse(cached);
+  }
+
+  try{
+    const response = await fetch(
+      `https://oss.exercisedb.dev/api/v1/exercises/search?q=${encodeURIComponent(cleanedName)}&pageSize=1`
+    );
+
+    if(!response.ok) return null;
+
+    const result = await response.json();
+    const exercise = Array.isArray(result) ? result[0] : result.data?.[0];
+
+    if(exercise){
+      sessionStorage.setItem(cacheKey, JSON.stringify(exercise));
+    }
+
+    return exercise || null;
+  }catch(e){
+    console.log(e);
+    return null;
+  }
+}
+
+function normalizeExerciseSearchName(name){
+  return String(name || '')
+    .toLowerCase()
+    .replace('barbell or dumbbell bench press','bench press')
+    .replace('standing or seated calf raises','calf raise')
+    .replace('tricep rope pushdowns','tricep pushdown')
+    .replace('close-grip pulldowns','lat pulldown')
+    .replace('reverse pec deck','reverse fly')
+    .replace(/[^a-z0-9 ]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
 function workoutGuideHtml(item){
-  const demoUrl = String(item.demo_url || '').trim() || getDefaultExerciseReference(item.name);
-  const instructions = String(item.instructions || '').trim();
+  const demoUrl = String(item.embedded_demo_url || item.demo_url || '').trim() || getDefaultExerciseReference(item.name);
+  const instructions = String(item.instructions || item.embedded_instructions || '').trim();
+  const fromExerciseDb = Boolean(item.embedded_demo_url);
 
   if(!demoUrl && !instructions){
     return `
@@ -1753,6 +1840,8 @@ function workoutGuideHtml(item){
         : `<a class="exercise-link" href="${demoUrl}" target="_blank" rel="noopener">Open YouTube Demo</a>`;
     }else if(lowerUrl.endsWith('.mp4') || lowerUrl.endsWith('.webm') || lowerUrl.endsWith('.ogg')){
       media = `<div class="exercise-demo"><video src="${demoUrl}" controls playsinline preload="metadata"></video></div>`;
+    }else if(lowerUrl.endsWith('.gif') || lowerUrl.endsWith('.jpg') || lowerUrl.endsWith('.jpeg') || lowerUrl.endsWith('.png') || lowerUrl.endsWith('.webp')){
+      media = `<div class="exercise-demo"><img src="${demoUrl}" alt="${item.name} demo" loading="lazy"></div>`;
     }else{
       media = `
         <div class="exercise-demo">
@@ -1767,6 +1856,7 @@ function workoutGuideHtml(item){
     <div class="exercise-guide">
       ${media}
       <p>${instructions || 'Follow the real demo exactly. Stop if pain or dizziness occurs and ask staff for correction.'}</p>
+      ${fromExerciseDb ? '<span class="source-note">Demo GIF source: ExerciseDB / AscendAPI.</span>' : ''}
     </div>
   `;
 }
@@ -1821,9 +1911,11 @@ async function renderWorkouts(){
     return;
   }
 
+  const enrichedItems = await Promise.all(items.map(item => enrichWorkoutMedia(item)));
+
   div.innerHTML = '';
 
-  items.forEach(item => {
+  enrichedItems.forEach(item => {
     const progressFields = item.type === 'cardio'
       ? `
         <div class="workout-meta">
