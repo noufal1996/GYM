@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,6 +18,9 @@
   --danger:#ef4444;
 }
 *{box-sizing:border-box}
+html{
+  touch-action:manipulation;
+}
 body{
   margin:0;
   font-family:Arial,sans-serif;
@@ -111,7 +115,6 @@ button:hover{
   display:flex;
   background:#020617;
   border-top:1px solid #1e293b;
-  overflow-x:auto;
 }
 .bottom-nav button{
   border-radius:0;
@@ -119,8 +122,6 @@ button:hover{
   background:none;
   color:white;
   padding:14px;
-  white-space:nowrap;
-  flex-shrink:0;
 }
 .page{
   display:none;
@@ -204,7 +205,7 @@ button:hover{
 }
 .exercise-guide{
   display:grid;
-  grid-template-columns:150px 1fr;
+  grid-template-columns:190px 1fr;
   gap:10px;
   align-items:center;
   margin-top:10px;
@@ -215,10 +216,38 @@ button:hover{
 }
 .exercise-demo{
   position:relative;
-  height:110px;
+  width:190px;
+  max-width:100%;
+  aspect-ratio:16/10;
+  height:auto;
+  margin:0 auto;
   overflow:hidden;
   background:#020617;
   border-radius:10px;
+  flex:0 0 auto;
+}
+.exercise-demo video,
+.exercise-demo img,
+.exercise-demo iframe{
+  width:100%;
+  height:100%;
+  display:block;
+  border:0;
+  object-fit:cover;
+}
+.exercise-placeholder{
+  min-height:120px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px;
+  text-align:center;
+  color:#fecaca;
+  background:#450a0a;
+  border:1px solid #991b1b;
+  border-radius:10px;
+  font-size:13px;
+  line-height:1.35;
 }
 .floor{
   position:absolute;
@@ -419,6 +448,16 @@ button:hover{
 @media(max-width:520px){
   .exercise-guide{
     grid-template-columns:1fr;
+    justify-items:center;
+  }
+  .exercise-demo{
+    width:100%;
+    min-width:0;
+    max-width:360px;
+  }
+  .exercise-guide p{
+    width:100%;
+    text-align:center;
   }
   .workout-grid,
   .workout-meta{
@@ -563,6 +602,8 @@ button:hover{
     </select>
     <input type="text" id="workoutFocus" class="uppercase" placeholder="FOCUS" oninput="forceUppercase(this)">
     <input type="text" id="workoutName" class="uppercase" placeholder="WORKOUT NAME" oninput="forceUppercase(this)">
+    <input type="url" id="workoutDemoUrl" placeholder="REAL DEMO VIDEO / GIF / IMAGE URL">
+    <textarea id="workoutInstructions" placeholder="TRAINER SAFETY NOTES / FORM CUES"></textarea>
     <select id="workoutType" onchange="toggleWorkoutFields()">
       <option value="strength">WEIGHTS / REPS</option>
       <option value="cardio">CYCLING / RUNNING</option>
@@ -653,6 +694,7 @@ let currentUser = null;
 let selectedWorkoutMember = null;
 let workoutTimers = {};
 let timerAudioCtx = null;
+let lockedWorkoutSaves = new Set();
 
 function forceUppercase(input){
   input.value = input.value.toUpperCase();
@@ -1363,6 +1405,8 @@ function clearWorkoutForm(){
   document.getElementById('workoutDay').value = '1';
   document.getElementById('workoutFocus').value = '';
   document.getElementById('workoutName').value = '';
+  document.getElementById('workoutDemoUrl').value = '';
+  document.getElementById('workoutInstructions').value = '';
   document.getElementById('workoutType').value = 'strength';
   document.getElementById('targetWeight').value = '';
   document.getElementById('targetReps').value = '';
@@ -1386,6 +1430,8 @@ async function saveWorkout(){
   const day_no = Number(document.getElementById('workoutDay').value || 1);
   const focus = document.getElementById('workoutFocus').value.trim().toUpperCase();
   const name = document.getElementById('workoutName').value.trim().toUpperCase();
+  const demo_url = document.getElementById('workoutDemoUrl').value.trim();
+  const instructions = document.getElementById('workoutInstructions').value.trim();
   const type = document.getElementById('workoutType').value;
 
   if(!name){
@@ -1399,6 +1445,8 @@ async function saveWorkout(){
     focus,
     name,
     type,
+    demo_url: demo_url || null,
+    instructions: instructions || null,
     target_weight: document.getElementById('targetWeight').value || null,
     target_reps: document.getElementById('targetReps').value || null,
     target_rounds: document.getElementById('targetRounds').value || null,
@@ -1457,6 +1505,8 @@ async function loadSixDayPlan(){
     focus:template.focus,
     name:template.name,
     type:template.type || 'strength',
+    demo_url:template.demo_url,
+    instructions:template.instructions,
     target_weight:template.target_weight,
     target_reps:template.target_reps,
     target_rounds:template.target_rounds,
@@ -1497,6 +1547,8 @@ async function editWorkout(id){
   document.getElementById('workoutDay').value = item.day_no || 1;
   document.getElementById('workoutFocus').value = item.focus || '';
   document.getElementById('workoutName').value = item.name;
+  document.getElementById('workoutDemoUrl').value = item.demo_url || '';
+  document.getElementById('workoutInstructions').value = item.instructions || '';
   document.getElementById('workoutType').value = item.type;
   document.getElementById('targetWeight').value = item.target_weight || '';
   document.getElementById('targetReps').value = item.target_reps || '';
@@ -1527,6 +1579,10 @@ async function deleteWorkout(id){
 }
 
 async function saveWorkoutLog(id, type){
+  if(lockedWorkoutSaves.has(id)){
+    return;
+  }
+
   const workoutName = document.getElementById(`workout-title-${id}`)?.innerText || 'WORKOUT';
   const isCardio = type === 'cardio';
   const weight = document.getElementById(`log-weight-${id}`)?.value || null;
@@ -1544,6 +1600,8 @@ async function saveWorkoutLog(id, type){
     return;
   }
 
+  lockWorkoutSave(id);
+
   const { error } = await sb
     .from('gym_workout_logs')
     .insert([{
@@ -1557,6 +1615,7 @@ async function saveWorkoutLog(id, type){
     }]);
 
   if(error){
+    unlockWorkoutSave(id);
     alert(error.message);
     return;
   }
@@ -1570,6 +1629,28 @@ async function saveWorkoutLog(id, type){
   }
 
   startFullScreenTimer(id, workoutName);
+}
+
+function lockWorkoutSave(id){
+  lockedWorkoutSaves.add(id);
+  const button = document.getElementById(`save-log-${id}`);
+
+  if(button){
+    button.disabled = true;
+    button.innerText = 'Saved - Timer Running';
+    button.style.opacity = '.65';
+  }
+}
+
+function unlockWorkoutSave(id){
+  lockedWorkoutSaves.delete(id);
+  const button = document.getElementById(`save-log-${id}`);
+
+  if(button){
+    button.disabled = false;
+    button.innerText = 'Save Workout';
+    button.style.opacity = '1';
+  }
 }
 
 function startFullScreenTimer(id, workoutName){
@@ -1605,6 +1686,7 @@ function startFullScreenTimer(id, workoutName){
       delete workoutTimers[id];
       text.innerText = 'TIME UP';
       text.classList.add('timerDone');
+      unlockWorkoutSave(id);
       playTimerAlarm();
       alert('1 MINUTE TIMER FINISHED');
     }
@@ -1615,9 +1697,65 @@ function closeFullScreenTimer(){
   Object.keys(workoutTimers).forEach(id => {
     clearInterval(workoutTimers[id]);
     delete workoutTimers[id];
+    unlockWorkoutSave(id);
   });
 
   document.getElementById('fullScreenTimer').classList.add('hidden');
+}
+
+function workoutGuideHtml(item){
+  const demoUrl = String(item.demo_url || '').trim();
+  const instructions = String(item.instructions || '').trim();
+
+  if(!demoUrl && !instructions){
+    return `
+      <div class="exercise-guide">
+        <div class="exercise-placeholder">
+          No verified demo added. Ask staff to add a real trainer-approved video before doing this movement without guidance.
+        </div>
+      </div>
+    `;
+  }
+
+  const lowerUrl = demoUrl.toLowerCase();
+  let media = '';
+
+  if(demoUrl){
+    if(lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')){
+      const embedUrl = getYouTubeEmbedUrl(demoUrl);
+      media = embedUrl
+        ? `<iframe src="${embedUrl}" allowfullscreen loading="lazy"></iframe>`
+        : `<div class="exercise-placeholder">Open demo: ${demoUrl}</div>`;
+    }else if(lowerUrl.endsWith('.mp4') || lowerUrl.endsWith('.webm') || lowerUrl.endsWith('.ogg')){
+      media = `<video src="${demoUrl}" controls playsinline preload="metadata"></video>`;
+    }else{
+      media = `<img src="${demoUrl}" alt="${item.name} demo" loading="lazy">`;
+    }
+  }
+
+  return `
+    <div class="exercise-guide">
+      ${media ? `<div class="exercise-demo">${media}</div>` : ''}
+      <p>${instructions || 'Follow the real demo exactly. Stop if pain or dizziness occurs and ask staff for correction.'}</p>
+    </div>
+  `;
+}
+
+function getYouTubeEmbedUrl(url){
+  try{
+    const parsed = new URL(url);
+    let videoId = '';
+
+    if(parsed.hostname.includes('youtu.be')){
+      videoId = parsed.pathname.replace('/','');
+    }else{
+      videoId = parsed.searchParams.get('v') || '';
+    }
+
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
+  }catch(e){
+    return '';
+  }
 }
 
 async function renderWorkouts(){
@@ -1683,8 +1821,9 @@ async function renderWorkouts(){
         <small>DAY ${item.day_no || 1}${item.focus ? ' - ' + item.focus : ''}</small><br>
         <strong id="workout-title-${item.id}">${item.name}</strong><br>
         <small>${target}</small>
+        ${workoutGuideHtml(item)}
         ${progressFields}
-        <button onclick="saveWorkoutLog('${item.id}','${item.type}')">Save Workout</button>
+        <button id="save-log-${item.id}" onclick="saveWorkoutLog('${item.id}','${item.type}')">Save Workout</button>
         ${manageButtons}
       </div>
     `;
