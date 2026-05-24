@@ -240,10 +240,44 @@ button:hover{
   color:#fde68a;
   font-weight:bold;
 }
+.timerOverlay{
+  position:fixed;
+  inset:0;
+  z-index:999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#020617;
+  color:white;
+  padding:20px;
+}
+.timerPanel{
+  width:100%;
+  max-width:520px;
+  text-align:center;
+}
+.timerPanel h2{
+  margin:0 0 12px;
+  font-size:24px;
+}
+.timerDisplay{
+  font-size:88px;
+  line-height:1;
+  font-weight:bold;
+  color:#fde68a;
+  margin:24px 0;
+}
+.timerDone{
+  color:#fecaca;
+  animation: warningBlink .22s linear 10;
+}
 @media(max-width:520px){
   .workout-grid,
   .workout-meta{
     grid-template-columns:1fr;
+  }
+  .timerDisplay{
+    font-size:64px;
   }
 }
 </style>
@@ -417,6 +451,29 @@ button:hover{
   </div>
 </div>
 
+<div id="workoutHistoryPage" class="page">
+  <div class="card">
+    <h2>Workout History</h2>
+    <div id="historyMemberPickerWrap">
+      <select id="historyMemberSelect" onchange="loadWorkoutHistory()"></select>
+    </div>
+    <select id="historyDaySelect" onchange="loadWorkoutHistory()">
+      <option value="">ALL DAYS</option>
+      <option value="1">DAY 1</option>
+      <option value="2">DAY 2</option>
+      <option value="3">DAY 3</option>
+      <option value="4">DAY 4</option>
+      <option value="5">DAY 5</option>
+      <option value="6">DAY 6</option>
+    </select>
+  </div>
+
+  <div class="card">
+    <h2>Saved Workouts</h2>
+    <div id="workoutHistoryList"></div>
+  </div>
+</div>
+
 </div>
 
 <div id="bottomNav" class="bottom-nav hidden">
@@ -425,7 +482,17 @@ button:hover{
   <button class="nav-owner-staff" onclick="showPage('paymentsPage')">Payments</button>
   <button class="nav-owner-staff" onclick="showPage('workoutPage')">Workout</button>
   <button class="nav-owner-staff" onclick="showPage('attendancePage')">Attendance</button>
+  <button class="nav-owner-staff" onclick="showPage('workoutHistoryPage')">History</button>
   <button class="nav-member-only" onclick="showPage('workoutPage')">Workout</button>
+  <button class="nav-member-only" onclick="showPage('workoutHistoryPage')">History</button>
+</div>
+
+<div id="fullScreenTimer" class="timerOverlay hidden">
+  <div class="timerPanel">
+    <h2 id="timerWorkoutName">Workout Timer</h2>
+    <div id="fullScreenTimerText" class="timerDisplay">01:00</div>
+    <button onclick="closeFullScreenTimer()">Close</button>
+  </div>
 </div>
 
 <script>
@@ -437,6 +504,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentUser = null;
 let selectedWorkoutMember = null;
 let workoutTimers = {};
+let timerAudioCtx = null;
 
 function forceUppercase(input){
   input.value = input.value.toUpperCase();
@@ -575,10 +643,10 @@ function canOpenPage(id){
   if(!currentUser) return false;
 
   if(currentUser.role === 'member'){
-    return id === 'workoutPage';
+    return ['workoutPage','workoutHistoryPage'].includes(id);
   }
 
-  return ['dashboardPage','membersPage','paymentsPage','workoutPage','attendancePage'].includes(id);
+  return ['dashboardPage','membersPage','paymentsPage','workoutPage','attendancePage','workoutHistoryPage'].includes(id);
 }
 
 function todayText(){
@@ -586,19 +654,27 @@ function todayText(){
 }
 
 function playTimerAlarm(){
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const oscillator = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
+  const audioCtx = timerAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
+  timerAudioCtx = audioCtx;
 
-  oscillator.type = 'square';
-  oscillator.frequency.value = 880;
-  oscillator.connect(gain);
-  gain.connect(audioCtx.destination);
-  gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.35, audioCtx.currentTime + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1);
-  oscillator.start();
-  oscillator.stop(audioCtx.currentTime + 1);
+  if(audioCtx.state === 'suspended'){
+    audioCtx.resume();
+  }
+
+  [0, .35, .7, 1.05].forEach((delay, index) => {
+    const oscillator = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    oscillator.type = 'square';
+    oscillator.frequency.value = index % 2 === 0 ? 880 : 1175;
+    oscillator.connect(gain);
+    gain.connect(audioCtx.destination);
+    gain.gain.setValueAtTime(0.001, audioCtx.currentTime + delay);
+    gain.gain.exponentialRampToValueAtTime(0.45, audioCtx.currentTime + delay + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.25);
+    oscillator.start(audioCtx.currentTime + delay);
+    oscillator.stop(audioCtx.currentTime + delay + 0.28);
+  });
 }
 
 function showPage(id){
@@ -629,6 +705,10 @@ function showPage(id){
 
   if(id === 'attendancePage'){
     loadAttendancePage();
+  }
+
+  if(id === 'workoutHistoryPage'){
+    loadWorkoutHistoryPage();
   }
 }
 
@@ -1298,45 +1378,73 @@ async function deleteWorkout(id){
   await renderWorkouts();
 }
 
-async function updateWorkoutProgress(id, field, value){
-  const { error } = await sb
-    .from('gym_workouts')
-    .update({ [field]: value || null })
-    .eq('id', id);
+async function saveWorkoutLog(id, type){
+  const workoutName = document.getElementById(`workout-title-${id}`)?.innerText || 'WORKOUT';
+  const isCardio = type === 'cardio';
+  const weight = document.getElementById(`log-weight-${id}`)?.value || null;
+  const reps = document.getElementById(`log-reps-${id}`)?.value || null;
+  const rounds = document.getElementById(`log-rounds-${id}`)?.value || null;
+  const time = document.getElementById(`log-time-${id}`)?.value || null;
 
-  if(error){
-    alert(error.message);
+  if(isCardio && !rounds && !time){
+    alert('Enter rounds or time');
+    return;
   }
-}
 
-async function toggleWorkoutDone(id, checked){
+  if(!isCardio && !weight && !reps){
+    alert('Enter weight or reps');
+    return;
+  }
+
   const { error } = await sb
-    .from('gym_workouts')
-    .update({
-      done: checked,
-      done_at: checked ? new Date().toISOString() : null
-    })
-    .eq('id', id);
+    .from('gym_workout_logs')
+    .insert([{
+      workout_id:id,
+      member_id:selectedWorkoutMember.id,
+      actual_weight:weight,
+      actual_reps:reps,
+      actual_rounds:rounds,
+      actual_time_minutes:time,
+      completed_at:new Date().toISOString()
+    }]);
 
   if(error){
     alert(error.message);
     return;
   }
 
-  await renderWorkouts();
+  if(isCardio){
+    document.getElementById(`log-rounds-${id}`).value = '';
+    document.getElementById(`log-time-${id}`).value = '';
+  }else{
+    document.getElementById(`log-weight-${id}`).value = '';
+    document.getElementById(`log-reps-${id}`).value = '';
+  }
+
+  startFullScreenTimer(id, workoutName);
 }
 
-function startWorkoutTimer(id){
+function startFullScreenTimer(id, workoutName){
+  timerAudioCtx = timerAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
+
+  if(timerAudioCtx.state === 'suspended'){
+    timerAudioCtx.resume();
+  }
+
   if(workoutTimers[id]){
     clearInterval(workoutTimers[id]);
   }
 
+  document.getElementById('fullScreenTimer').classList.remove('hidden');
+  document.getElementById('timerWorkoutName').innerText = workoutName;
+
   let seconds = 60;
-  const text = document.getElementById(`timer-${id}`);
+  const text = document.getElementById('fullScreenTimerText');
 
   if(!text) return;
 
   text.innerText = '01:00';
+  text.classList.remove('timerDone');
 
   workoutTimers[id] = setInterval(() => {
     seconds--;
@@ -1348,10 +1456,20 @@ function startWorkoutTimer(id){
       clearInterval(workoutTimers[id]);
       delete workoutTimers[id];
       text.innerText = 'TIME UP';
+      text.classList.add('timerDone');
       playTimerAlarm();
       alert('1 MINUTE TIMER FINISHED');
     }
   }, 1000);
+}
+
+function closeFullScreenTimer(){
+  Object.keys(workoutTimers).forEach(id => {
+    clearInterval(workoutTimers[id]);
+    delete workoutTimers[id];
+  });
+
+  document.getElementById('fullScreenTimer').classList.add('hidden');
 }
 
 async function renderWorkouts(){
@@ -1388,14 +1506,14 @@ async function renderWorkouts(){
     const progressFields = item.type === 'cardio'
       ? `
         <div class="workout-meta">
-          <label>Rounds Done<input type="number" value="${item.actual_rounds || ''}" onchange="updateWorkoutProgress('${item.id}','actual_rounds',this.value)"></label>
-          <label>Time Minutes<input type="number" value="${item.actual_time_minutes || ''}" onchange="updateWorkoutProgress('${item.id}','actual_time_minutes',this.value)"></label>
+          <label>Rounds<input type="number" id="log-rounds-${item.id}" placeholder="Rounds"></label>
+          <label>Time Minutes<input type="number" id="log-time-${item.id}" placeholder="Time"></label>
         </div>
       `
       : `
         <div class="workout-meta">
-          <label>Weight Done<input type="number" value="${item.actual_weight || ''}" onchange="updateWorkoutProgress('${item.id}','actual_weight',this.value)"></label>
-          <label>Reps / Times<input type="number" value="${item.actual_reps || ''}" onchange="updateWorkoutProgress('${item.id}','actual_reps',this.value)"></label>
+          <label>Weight<input type="number" id="log-weight-${item.id}" placeholder="Weight"></label>
+          <label>Reps / Times<input type="number" id="log-reps-${item.id}" placeholder="Reps / Times"></label>
         </div>
       `;
 
@@ -1415,19 +1533,108 @@ async function renderWorkouts(){
     div.innerHTML += `
       <div class="workout-row">
         <small>DAY ${item.day_no || 1}${item.focus ? ' - ' + item.focus : ''}</small><br>
-        <strong>${item.name}</strong><br>
+        <strong id="workout-title-${item.id}">${item.name}</strong><br>
         <small>${target}</small>
         ${progressFields}
-        <label style="display:block;margin-top:8px;">
-          <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleWorkoutDone('${item.id}',this.checked)" style="width:auto;margin-right:6px;">
-          Mark Done
-        </label>
-        ${item.done ? `<span class="doneBadge">DONE ${item.done_at ? new Date(item.done_at).toLocaleString() : ''}</span>` : ''}
-        <div>
-          <button onclick="startWorkoutTimer('${item.id}')">Start 1 Min Timer</button>
-          <span id="timer-${item.id}" class="timerText">01:00</span>
-        </div>
+        <button onclick="saveWorkoutLog('${item.id}','${item.type}')">Save Workout</button>
         ${manageButtons}
+      </div>
+    `;
+  });
+}
+
+async function loadWorkoutHistoryPage(){
+  const pickerWrap = document.getElementById('historyMemberPickerWrap');
+
+  if(currentUser.role === 'member'){
+    pickerWrap.classList.add('hidden');
+    await loadWorkoutHistory();
+    return;
+  }
+
+  pickerWrap.classList.remove('hidden');
+
+  const { data, error } = await sb
+    .from('gym_members')
+    .select('*')
+    .order('name');
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  const select = document.getElementById('historyMemberSelect');
+  select.innerHTML = '';
+
+  data.forEach(member => {
+    select.innerHTML += `
+      <option value="${member.id}">
+        ${String(member.name || '').toUpperCase()} - ${member.phone}
+      </option>
+    `;
+  });
+
+  await loadWorkoutHistory();
+}
+
+async function loadWorkoutHistory(){
+  const div = document.getElementById('workoutHistoryList');
+  const dayNo = document.getElementById('historyDaySelect').value;
+  const memberId = currentUser.role === 'member'
+    ? currentUser.memberId
+    : document.getElementById('historyMemberSelect').value;
+
+  if(!memberId){
+    div.innerHTML = '<div class="muted">Select member</div>';
+    return;
+  }
+
+  let query = sb
+    .from('gym_workout_logs')
+    .select(`
+      *,
+      gym_workouts(name,type,day_no,focus),
+      gym_members(name,phone)
+    `)
+    .eq('member_id', memberId)
+    .order('completed_at', { ascending:false })
+    .limit(100);
+
+  if(dayNo){
+    query = query.eq('gym_workouts.day_no', Number(dayNo));
+  }
+
+  const { data, error } = await query;
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  const rows = dayNo
+    ? data.filter(row => Number(row.gym_workouts?.day_no) === Number(dayNo))
+    : data;
+
+  if(!rows.length){
+    div.innerHTML = '<div class="muted">No workout history found</div>';
+    return;
+  }
+
+  div.innerHTML = '';
+
+  rows.forEach(row => {
+    const workout = row.gym_workouts || {};
+    const detail = workout.type === 'cardio'
+      ? `Rounds : ${row.actual_rounds || 0}<br>Time : ${row.actual_time_minutes || 0} minutes`
+      : `Weight : ${row.actual_weight || 0}<br>Reps / Times : ${row.actual_reps || 0}`;
+
+    div.innerHTML += `
+      <div class="member">
+        <strong>${workout.name || ''}</strong><br>
+        <small>DAY ${workout.day_no || ''}${workout.focus ? ' - ' + workout.focus : ''}</small><br><br>
+        ${detail}<br>
+        Saved : ${new Date(row.completed_at).toLocaleString()}
       </div>
     `;
   });
