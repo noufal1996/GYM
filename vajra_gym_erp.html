@@ -1740,20 +1740,18 @@ function workoutGuideHtml(item){
     if(lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')){
       const embedUrl = getYouTubeEmbedUrl(demoUrl);
       media = embedUrl
-        ? `<iframe src="${embedUrl}" allowfullscreen loading="lazy"></iframe>`
+        ? `<div class="exercise-demo"><iframe src="${embedUrl}" allowfullscreen loading="lazy"></iframe></div>`
         : `<a class="exercise-link" href="${demoUrl}" target="_blank" rel="noopener">Open YouTube Demo</a>`;
     }else if(lowerUrl.endsWith('.mp4') || lowerUrl.endsWith('.webm') || lowerUrl.endsWith('.ogg')){
-      media = `<video src="${demoUrl}" controls playsinline preload="metadata"></video>`;
-    }else if(lowerUrl.endsWith('.jpg') || lowerUrl.endsWith('.jpeg') || lowerUrl.endsWith('.png') || lowerUrl.endsWith('.gif') || lowerUrl.endsWith('.webp')){
-      media = `<img src="${demoUrl}" alt="${item.name} demo" loading="lazy">`;
+      media = `<div class="exercise-demo"><video src="${demoUrl}" controls playsinline preload="metadata"></video></div>`;
     }else{
-      media = `<a class="exercise-link" href="${demoUrl}" target="_blank" rel="noopener">Open Verified Exercise Guide</a>`;
+      media = `<a class="exercise-link" href="${demoUrl}" target="_blank" rel="noopener">Open Exercise Demo / Guide</a>`;
     }
   }
 
   return `
     <div class="exercise-guide">
-      ${media ? `<div class="exercise-demo">${media}</div>` : ''}
+      ${media}
       <p>${instructions || 'Follow the real demo exactly. Stop if pain or dizziness occurs and ask staff for correction.'}</p>
     </div>
   `;
