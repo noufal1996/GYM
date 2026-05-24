@@ -249,6 +249,22 @@ button:hover{
   font-size:13px;
   line-height:1.35;
 }
+.exercise-link{
+  min-height:120px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px;
+  text-align:center;
+  color:#020617;
+  background:#22c55e;
+  border-radius:10px;
+  font-weight:bold;
+  text-decoration:none;
+}
+.exercise-link:hover{
+  opacity:.9;
+}
 .floor{
   position:absolute;
   left:18px;
@@ -1704,7 +1720,7 @@ function closeFullScreenTimer(){
 }
 
 function workoutGuideHtml(item){
-  const demoUrl = String(item.demo_url || '').trim();
+  const demoUrl = String(item.demo_url || '').trim() || getDefaultExerciseReference(item.name);
   const instructions = String(item.instructions || '').trim();
 
   if(!demoUrl && !instructions){
@@ -1725,11 +1741,13 @@ function workoutGuideHtml(item){
       const embedUrl = getYouTubeEmbedUrl(demoUrl);
       media = embedUrl
         ? `<iframe src="${embedUrl}" allowfullscreen loading="lazy"></iframe>`
-        : `<div class="exercise-placeholder">Open demo: ${demoUrl}</div>`;
+        : `<a class="exercise-link" href="${demoUrl}" target="_blank" rel="noopener">Open YouTube Demo</a>`;
     }else if(lowerUrl.endsWith('.mp4') || lowerUrl.endsWith('.webm') || lowerUrl.endsWith('.ogg')){
       media = `<video src="${demoUrl}" controls playsinline preload="metadata"></video>`;
-    }else{
+    }else if(lowerUrl.endsWith('.jpg') || lowerUrl.endsWith('.jpeg') || lowerUrl.endsWith('.png') || lowerUrl.endsWith('.gif') || lowerUrl.endsWith('.webp')){
       media = `<img src="${demoUrl}" alt="${item.name} demo" loading="lazy">`;
+    }else{
+      media = `<a class="exercise-link" href="${demoUrl}" target="_blank" rel="noopener">Open Verified Exercise Guide</a>`;
     }
   }
 
@@ -1739,6 +1757,11 @@ function workoutGuideHtml(item){
       <p>${instructions || 'Follow the real demo exactly. Stop if pain or dizziness occurs and ask staff for correction.'}</p>
     </div>
   `;
+}
+
+function getDefaultExerciseReference(name){
+  const query = encodeURIComponent(String(name || '').trim());
+  return query ? `https://www.muscleandstrength.com/exercises?search=${query}` : '';
 }
 
 function getYouTubeEmbedUrl(url){
