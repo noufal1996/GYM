@@ -97,42 +97,49 @@ alter table gym_workout_templates enable row level security;
 alter table gym_workout_logs enable row level security;
 alter table gym_attendance enable row level security;
 
+drop policy if exists "Allow all gym_members" on gym_members;
 create policy "Allow all gym_members"
 on gym_members
 for all
 using (true)
 with check (true);
 
+drop policy if exists "Allow all gym_payments" on gym_payments;
 create policy "Allow all gym_payments"
 on gym_payments
 for all
 using (true)
 with check (true);
 
+drop policy if exists "Allow all gym_users" on gym_users;
 create policy "Allow all gym_users"
 on gym_users
 for all
 using (true)
 with check (true);
 
+drop policy if exists "Allow all gym_workouts" on gym_workouts;
 create policy "Allow all gym_workouts"
 on gym_workouts
 for all
 using (true)
 with check (true);
 
+drop policy if exists "Allow all gym_workout_templates" on gym_workout_templates;
 create policy "Allow all gym_workout_templates"
 on gym_workout_templates
 for all
 using (true)
 with check (true);
 
+drop policy if exists "Allow all gym_workout_logs" on gym_workout_logs;
 create policy "Allow all gym_workout_logs"
 on gym_workout_logs
 for all
 using (true)
 with check (true);
 
+drop policy if exists "Allow all gym_attendance" on gym_attendance;
 create policy "Allow all gym_attendance"
 on gym_attendance
 for all
@@ -261,7 +268,7 @@ from gym_workout_templates t
 where w.day_no = t.day_no
 and w.name = t.name
 and (w.demo_url is null or w.demo_url = '');
-+
+
 
 -- Curated direct-playable workout demonstrations.
 -- Existing custom video URLs are preserved; only blank or generic search links are replaced.
@@ -313,3 +320,30 @@ where w.day_no = t.day_no
 and w.name = t.name
 and t.demo_url like 'https://www.youtube.com/watch?v=%'
 and (w.demo_url is null or w.demo_url = '' or w.demo_url like '%muscleandstrength.com/exercises?search=%');
+
+
+-- Owner/staff broadcasts shown inside the member app.
+create table if not exists gym_announcements(
+    id bigserial primary key,
+    title text not null check (char_length(title) between 1 and 80),
+    message text not null check (char_length(message) between 1 and 500),
+    audience text not null default 'all' check (audience in ('all','members','staff')),
+    created_by text,
+    expires_at timestamptz,
+    created_at timestamptz not null default now()
+);
+
+alter table gym_announcements enable row level security;
+
+drop policy if exists "Allow all gym_announcements" on gym_announcements;
+create policy "Allow all gym_announcements"
+on gym_announcements
+for all
+using (true)
+with check (true);
+
+create index if not exists idx_gym_announcements_created
+on gym_announcements(created_at desc);
+
+create index if not exists idx_gym_announcements_expires
+on gym_announcements(expires_at);

@@ -222,7 +222,7 @@ from gym_workout_templates t
 where w.day_no = t.day_no
 and w.name = t.name
 and (w.demo_url is null or w.demo_url = '');
-+
+
 
 -- Curated direct-playable workout demonstrations.
 -- Existing custom video URLs are preserved; only blank or generic search links are replaced.
@@ -274,3 +274,30 @@ where w.day_no = t.day_no
 and w.name = t.name
 and t.demo_url like 'https://www.youtube.com/watch?v=%'
 and (w.demo_url is null or w.demo_url = '' or w.demo_url like '%muscleandstrength.com/exercises?search=%');
+
+
+-- Owner/staff broadcasts shown inside the member app.
+create table if not exists gym_announcements(
+    id bigserial primary key,
+    title text not null check (char_length(title) between 1 and 80),
+    message text not null check (char_length(message) between 1 and 500),
+    audience text not null default 'all' check (audience in ('all','members','staff')),
+    created_by text,
+    expires_at timestamptz,
+    created_at timestamptz not null default now()
+);
+
+alter table gym_announcements enable row level security;
+
+drop policy if exists "Allow all gym_announcements" on gym_announcements;
+create policy "Allow all gym_announcements"
+on gym_announcements
+for all
+using (true)
+with check (true);
+
+create index if not exists idx_gym_announcements_created
+on gym_announcements(created_at desc);
+
+create index if not exists idx_gym_announcements_expires
+on gym_announcements(expires_at);
