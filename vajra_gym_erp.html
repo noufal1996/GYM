@@ -539,6 +539,7 @@ input,select,textarea{border:1px solid #263c32;background:#0d1c16;outline:none;t
 .tool-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.tool-card{margin:0;padding:15px}.tool-card.full{grid-column:1/-1}.tool-card h3{font-size:14px;margin:0 0 4px}.tool-card>p{font-size:10px;color:var(--muted);margin:0 0 10px;line-height:1.45}.tool-value{font-size:29px;font-weight:850;letter-spacing:-.04em;margin:9px 0}.tool-value small{font-size:11px;color:var(--muted);font-weight:600}.stepper{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:6px}.stepper button{height:42px;margin:0;padding:0}.stepper strong{text-align:center;font-size:21px}.range-label{display:flex;justify-content:space-between;margin-top:10px;color:var(--muted);font-size:9px}input[type="range"]{padding:0;border:0;box-shadow:none;accent-color:var(--accent)}.readiness-score{display:flex;align-items:center;gap:13px;padding:11px;border-radius:14px;background:#0d1c16}.readiness-score strong{font-size:29px;color:var(--accent)}.readiness-score span,.readiness-score small{display:block}.readiness-score small{color:var(--muted);font-size:9px;margin-top:2px}.goal-box{padding:11px;border-radius:13px;background:#0d1c16}.goal-box strong,.goal-box small{display:block}.goal-box small{color:var(--muted);margin-top:4px}.record-row{display:grid;grid-template-columns:1fr auto;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}.record-row:last-child{border:0}.record-row strong,.record-row small{display:block}.record-row small{font-size:9px;color:var(--muted);margin-top:3px}.record-value{text-align:right;color:var(--accent)}
 .bottom-nav{width:min(580px,calc(100% - 18px));justify-content:space-around}.bottom-nav button{flex:1}.nav-extra{display:flex!important}.nav-extra.hidden{display:none!important}.nav-sheet-only{display:none!important}
 @media(max-width:620px){body::before{display:none}header{padding:10px 14px}.brand-copy small{display:none}.container{padding:15px 11px 98px}.page{padding-bottom:8px}.dashboard-hero{margin-bottom:13px}.dashboard-hero .eyebrow{display:none}.dashboard-hero h2{font-size:25px}.dashboard-hero p{font-size:11px}.quick-actions{display:none}.kpi-grid{gap:7px;margin-bottom:8px}.kpi-card{min-height:108px;padding:13px}.kpi-icon{font-size:16px}.kpi-label{font-size:10px;margin:10px 0 3px}.kpi-value{font-size:22px}.kpi-note{font-size:9px}.dashboard-grid{gap:8px}.dashboard-grid>.card{padding:14px}.panel-header h2{font-size:15px}.health-row{grid-template-columns:86px 1fr;gap:12px}.health-ring{width:84px;height:84px}.health-ring::before{inset:8px}.health-ring strong{font-size:20px}.mini-stat{padding:7px 0;font-size:11px}.activity-item{padding:9px}.bottom-nav{bottom:8px;border-radius:19px;padding:5px}.bottom-nav button{flex:1 0 0;padding:7px 2px;font-size:9px}.nav-icon{font-size:17px}.card{box-shadow:none}.fab{bottom:78px;right:15px}}
+.plan-day{cursor:pointer}
 </style>
 </head>
 <body>
@@ -846,6 +847,7 @@ let timerAudioCtx = null;
 let lockedWorkoutSaves = new Set();
 let memberStatusFilter = 'all';
 let deferredInstallPrompt = null;
+let requestedWorkoutDay = null;
 
 function forceUppercase(input){
   input.value = input.value.toUpperCase();
@@ -925,6 +927,11 @@ function setMemberFilter(filter,button){
   memberStatusFilter = filter;
   document.querySelectorAll('[data-member-filter]').forEach(chip=>chip.classList.toggle('active',chip === button));
   loadMembers();
+}
+
+function openWorkoutDay(dayNo){
+  requestedWorkoutDay = Number(dayNo);
+  showPage('workoutPage');
 }
 
 function showExpiredLoginWarning(member){
@@ -1219,7 +1226,7 @@ async function loadMemberHome(){
     const planDay = index+1;
     const dayWorkouts = allWorkouts.filter(workout=>Number(workout.day_no)===planDay);
     const focus = dayWorkouts[0]?.focus || 'Plan not assigned';
-    return `<div class="plan-day ${planDay===dayNo?'today':''}"><small>DAY ${planDay}${planDay===dayNo?' · TODAY':''}</small><strong>${escapeHtml(focus)}</strong><span>${dayWorkouts.length} exercise${dayWorkouts.length===1?'':'s'}</span></div>`;
+    return `<div class="plan-day ${planDay===dayNo?'today':''}" onclick="openWorkoutDay(${planDay})"><small>DAY ${planDay}${planDay===dayNo?' · TODAY':''}</small><strong>${escapeHtml(focus)}</strong><span>${dayWorkouts.length} exercise${dayWorkouts.length===1?'':'s'}</span></div>`;
   }).join('');
 
   const achievements = [
@@ -1238,6 +1245,109 @@ async function loadMemberHome(){
     const detail = workout.type === 'cardio' ? `${log.actual_time_minutes || 0} min · ${log.actual_rounds || 0} rounds` : `${log.actual_weight || 0} kg · ${log.actual_reps || 0} reps`;
     return `<div class="activity-item"><div class="activity-avatar">✓</div><div class="activity-copy"><strong>${escapeHtml(workout.name || 'Workout')}</strong><small>${escapeHtml(detail)} · ${new Date(log.completed_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</small></div><span class="status-pill">DONE</span></div>`;
   }).join('') : '<div class="empty-state">Complete your first workout to start your progress story.</div>';
+}
+
+function memberLocalKey(name){
+  return `vajra-member-${currentUser?.memberId || currentUser?.username || 'guest'}-${name}`;
+}
+
+function updateReadinessPreview(){
+  const sleep = Number(document.getElementById('readinessSleep').value);
+  const energy = Number(document.getElementById('readinessEnergy').value);
+  const soreness = Number(document.getElementById('readinessSoreness').value);
+  const score = Math.round(Math.max(0,Math.min(40,(sleep-3)/7*40)) + energy/5*40 + (6-soreness)/5*20);
+  document.getElementById('sleepValue').innerText = sleep;
+  document.getElementById('energyValue').innerText = energy;
+  document.getElementById('sorenessValue').innerText = soreness;
+  document.getElementById('readinessScore').innerText = score;
+  const title = score>=80?'Strong readiness':score>=60?'Ready to train':score>=40?'Take it lighter':'Recovery first';
+  const advice = score>=80?'You appear ready for your planned session.':score>=60?'Warm up well and follow your plan.':score>=40?'Consider reducing load or volume today.':'Consider rest and speak with your coach if this persists.';
+  document.getElementById('readinessTitle').innerText = title;
+  document.getElementById('readinessAdvice').innerText = advice;
+  return {sleep,energy,soreness,score};
+}
+
+function saveReadiness(){
+  const value = {...updateReadinessPreview(),date:todayText()};
+  localStorage.setItem(memberLocalKey('readiness'),JSON.stringify(value));
+  notify('Today’s readiness saved');
+}
+
+function changeWater(amount){
+  const key = memberLocalKey(`water-${todayText()}`);
+  const current = Number(localStorage.getItem(key) || 0);
+  const next = Math.max(0,Math.min(20,current+amount));
+  localStorage.setItem(key,String(next));
+  document.getElementById('waterCount').innerText = next;
+  if(next===8 && amount>0) notify('Hydration goal reached');
+}
+
+function editMemberGoal(){
+  const current = JSON.parse(localStorage.getItem(memberLocalKey('goal')) || '{}');
+  const text = prompt('What is your main training goal?',current.text || '');
+  if(!text) return;
+  const targetDate = prompt('Target date (YYYY-MM-DD), optional',current.targetDate || '');
+  if(targetDate && !/^\d{4}-\d{2}-\d{2}$/.test(targetDate)){ notify('Use date format YYYY-MM-DD','error'); return; }
+  localStorage.setItem(memberLocalKey('goal'),JSON.stringify({text:text.slice(0,80),targetDate}));
+  renderMemberGoal();
+  notify('Goal updated');
+}
+
+function renderMemberGoal(){
+  const goal = JSON.parse(localStorage.getItem(memberLocalKey('goal')) || '{}');
+  document.getElementById('memberGoalText').innerText = goal.text || 'Set a goal';
+  document.getElementById('memberGoalDate').innerText = goal.targetDate ? `Target ${new Date(`${goal.targetDate}T12:00:00`).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}` : 'Tap below to update';
+}
+
+function calculateOneRm(){
+  const weight = Number(document.getElementById('oneRmWeight').value);
+  const reps = Number(document.getElementById('oneRmReps').value);
+  if(weight<=0 || reps<1 || reps>20){ notify('Enter a valid weight and 1–20 reps','error'); return; }
+  const estimate = weight*(1+reps/30);
+  const result = document.getElementById('oneRmResult');
+  result.innerText = `Estimated 1RM: ${estimate.toFixed(1)} kg`;
+  result.classList.remove('hidden');
+}
+
+function calculateBmi(){
+  const weight = Number(document.getElementById('bmiWeight').value);
+  const heightCm = Number(document.getElementById('bmiHeight').value);
+  if(weight<=0 || heightCm<80 || heightCm>250){ notify('Enter valid weight and height values','error'); return; }
+  const bmi = weight/Math.pow(heightCm/100,2);
+  const result = document.getElementById('bmiResult');
+  result.innerText = `Calculated BMI: ${bmi.toFixed(1)}. Use this only as a general reference.`;
+  result.classList.remove('hidden');
+}
+
+async function loadMemberTools(){
+  if(currentUser?.role !== 'member') return;
+  const readiness = JSON.parse(localStorage.getItem(memberLocalKey('readiness')) || '{}');
+  if(readiness.date===todayText()){
+    document.getElementById('readinessSleep').value=readiness.sleep;
+    document.getElementById('readinessEnergy').value=readiness.energy;
+    document.getElementById('readinessSoreness').value=readiness.soreness;
+  }
+  updateReadinessPreview();
+  document.getElementById('waterCount').innerText = localStorage.getItem(memberLocalKey(`water-${todayText()}`)) || '0';
+  renderMemberGoal();
+
+  const memberId = currentUser.memberId;
+  const records = document.getElementById('personalRecords');
+  if(!memberId){ records.innerHTML='<div class="empty-state">Member profile unavailable.</div>'; return; }
+  const { data,error } = await sb.from('gym_workout_logs').select('*,gym_workouts(name,type)').eq('member_id',memberId).order('completed_at',{ascending:false}).limit(1000);
+  if(error){ records.innerHTML=`<div class="empty-state">${escapeHtml(error.message)}</div>`; return; }
+  const best = new Map();
+  (data || []).forEach(log=>{
+    const workout = log.gym_workouts || {};
+    const name = workout.name || 'Workout';
+    const score = workout.type==='cardio' ? Number(log.actual_rounds || 0)*1000+Number(log.actual_time_minutes || 0) : Number(log.actual_weight || 0)*(1+Number(log.actual_reps || 0)/30);
+    if(!best.has(name) || score>best.get(name).score) best.set(name,{name,type:workout.type,score,weight:log.actual_weight,reps:log.actual_reps,rounds:log.actual_rounds,time:log.actual_time_minutes,date:log.completed_at});
+  });
+  const rows = [...best.values()].sort((a,b)=>b.score-a.score).slice(0,12);
+  records.innerHTML = rows.length ? rows.map(record=>{
+    const value = record.type==='cardio' ? `${record.rounds || 0} rounds · ${record.time || 0} min` : `${record.weight || 0} kg × ${record.reps || 0}`;
+    return `<div class="record-row"><div><strong>${escapeHtml(record.name)}</strong><small>${new Date(record.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</small></div><strong class="record-value">${escapeHtml(value)}</strong></div>`;
+  }).join('') : '<div class="empty-state">Log workouts to build your personal-record board.</div>';
 }
 
 async function saveMember(){
@@ -1723,7 +1833,8 @@ async function loadWorkoutPage(){
   if(isMember){
     pickerWrap.classList.add('hidden');
     const weekday = new Date().getDay();
-    document.getElementById('workoutViewDay').value = String(weekday === 0 ? 1 : Math.min(6,weekday));
+    document.getElementById('workoutViewDay').value = String(requestedWorkoutDay || (weekday === 0 ? 1 : Math.min(6,weekday)));
+    requestedWorkoutDay = null;
 
     if(!currentUser?.memberId) return;
 
