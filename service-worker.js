@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vajra-shell-v3';
+const CACHE_NAME = 'vajra-shell-v4';
 const SHELL_FILES = ['./vajra_gym_erp.html','./manifest.webmanifest','./vajra-icon.svg'];
 
 self.addEventListener('install',event=>{
