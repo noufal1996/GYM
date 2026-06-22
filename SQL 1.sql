@@ -261,3 +261,55 @@ from gym_workout_templates t
 where w.day_no = t.day_no
 and w.name = t.name
 and (w.demo_url is null or w.demo_url = '');
++
+
+-- Curated direct-playable workout demonstrations.
+-- Existing custom video URLs are preserved; only blank or generic search links are replaced.
+update gym_workout_templates as t
+set demo_url = v.demo_url
+from (values
+('BARBELL OR DUMBBELL BENCH PRESS','https://www.youtube.com/watch?v=4Y2ZdHCOXok'),
+('CABLE CROSSOVERS','https://www.youtube.com/watch?v=JUDTGZh4rhg'),
+('SEATED DUMBBELL PRESS','https://www.youtube.com/watch?v=rO_iEImwHyo'),
+('LATERAL RAISES','https://www.youtube.com/watch?v=Y29xKcze8Ik'),
+('TRICEP ROPE PUSHDOWNS','https://www.youtube.com/watch?v=vB5OHsJ3EME'),
+('SKULL CRUSHERS','https://www.youtube.com/watch?v=S0fmDR60X-o'),
+('PULL-UPS','https://www.youtube.com/watch?v=eGo4IYlbE5g'),
+('LAT PULLDOWNS','https://www.youtube.com/watch?v=SALxEARiMkw'),
+('SEATED CABLE ROWS','https://www.youtube.com/watch?v=CsROhQ1onAg'),
+('BARBELL CURLS','https://www.youtube.com/watch?v=kwG2ipFRgfo'),
+('HAMMER CURLS','https://www.youtube.com/watch?v=BRVDS6HVR9Q'),
+('BARBELL SQUATS','https://www.youtube.com/watch?v=gcNh17Ckjgg'),
+('LEG PRESS','https://www.youtube.com/watch?v=K5n2vg3oZa4'),
+('LUNGES','https://www.youtube.com/watch?v=wrwwXE_x-pQ'),
+('ROMANIAN DEADLIFTS','https://www.youtube.com/watch?v=5zmlnbWb-g4'),
+('SEATED LEG CURLS','https://www.youtube.com/watch?v=t9sTSr-JYSs'),
+('STANDING OR SEATED CALF RAISES','https://www.youtube.com/watch?v=6O5hh1rBtx8'),
+('INCLINE DUMBBELL PRESS','https://www.youtube.com/watch?v=IP4oeKh1Sd4'),
+('CHEST FLYS','https://www.youtube.com/watch?v=mLgYNdxj-Vw'),
+('STANDING OVERHEAD PRESS','https://www.youtube.com/watch?v=KP1sYz2VICk'),
+('REVERSE PEC DECK','https://www.youtube.com/watch?v=dC7jhEk-29A'),
+('OVERHEAD DUMBBELL EXTENSIONS','https://www.youtube.com/watch?v=fYqswDVbJDg'),
+('TRICEP DIPS','https://www.youtube.com/watch?v=6kALZikXxLc'),
+('DEADLIFTS','https://www.youtube.com/watch?v=XxWcirHIwVo'),
+('T-BAR ROWS','https://www.youtube.com/watch?v=TyLoy3n_a10'),
+('CLOSE-GRIP PULLDOWNS','https://www.youtube.com/watch?v=8hzVLzu-RJk'),
+('PREACHER CURLS','https://www.youtube.com/watch?v=R-8Sa0_qiws'),
+('ALTERNATING DUMBBELL CURLS','https://www.youtube.com/watch?v=sAq_ocpRh_I'),
+('FRONT SQUATS','https://www.youtube.com/watch?v=nmUof3vszxM'),
+('BULGARIAN SPLIT SQUATS','https://www.youtube.com/watch?v=hiLF_pF3EJM'),
+('LYING LEG CURLS','https://www.youtube.com/watch?v=vl5nUdE9mWM'),
+('GLUTE BRIDGES','https://www.youtube.com/watch?v=Q_Bpj91Yiis'),
+('CALF PRESS','https://www.youtube.com/watch?v=PYZY00hI43w')
+) as v(name,demo_url)
+where t.name = v.name
+and (t.demo_url is null or t.demo_url = '' or t.demo_url like '%muscleandstrength.com/exercises?search=%');
+
+update gym_workouts as w
+set demo_url = t.demo_url,
+    instructions = coalesce(w.instructions,t.instructions)
+from gym_workout_templates as t
+where w.day_no = t.day_no
+and w.name = t.name
+and t.demo_url like 'https://www.youtube.com/watch?v=%'
+and (w.demo_url is null or w.demo_url = '' or w.demo_url like '%muscleandstrength.com/exercises?search=%');

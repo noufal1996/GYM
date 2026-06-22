@@ -2335,6 +2335,11 @@ async function enrichWorkoutMedia(item){
     return item;
   }
 
+  const curatedVideo = getCuratedExerciseVideo(item.name);
+  if(curatedVideo){
+    return {...item,embedded_demo_url:curatedVideo,embedded_source:'Curated YouTube exercise demonstration'};
+  }
+
   const exercise = await findExerciseDbDemo(item.name);
 
   const mediaUrl = exercise?.gifUrl || exercise?.gif_url || exercise?.imageUrl || exercise?.image_url || exercise?.images?.[0];
@@ -2350,6 +2355,46 @@ async function enrichWorkoutMedia(item){
       ? exercise.instructions.join(' ')
       : ''
   };
+}
+
+function getCuratedExerciseVideo(name){
+  const videos = {
+    'BARBELL OR DUMBBELL BENCH PRESS':'4Y2ZdHCOXok',
+    'CABLE CROSSOVERS':'JUDTGZh4rhg',
+    'SEATED DUMBBELL PRESS':'rO_iEImwHyo',
+    'LATERAL RAISES':'Y29xKcze8Ik',
+    'TRICEP ROPE PUSHDOWNS':'vB5OHsJ3EME',
+    'SKULL CRUSHERS':'S0fmDR60X-o',
+    'PULL-UPS':'eGo4IYlbE5g',
+    'LAT PULLDOWNS':'SALxEARiMkw',
+    'SEATED CABLE ROWS':'CsROhQ1onAg',
+    'BARBELL CURLS':'kwG2ipFRgfo',
+    'HAMMER CURLS':'BRVDS6HVR9Q',
+    'BARBELL SQUATS':'gcNh17Ckjgg',
+    'LEG PRESS':'K5n2vg3oZa4',
+    'LUNGES':'wrwwXE_x-pQ',
+    'ROMANIAN DEADLIFTS':'5zmlnbWb-g4',
+    'SEATED LEG CURLS':'t9sTSr-JYSs',
+    'STANDING OR SEATED CALF RAISES':'6O5hh1rBtx8',
+    'INCLINE DUMBBELL PRESS':'IP4oeKh1Sd4',
+    'CHEST FLYS':'mLgYNdxj-Vw',
+    'STANDING OVERHEAD PRESS':'KP1sYz2VICk',
+    'REVERSE PEC DECK':'dC7jhEk-29A',
+    'OVERHEAD DUMBBELL EXTENSIONS':'fYqswDVbJDg',
+    'TRICEP DIPS':'6kALZikXxLc',
+    'DEADLIFTS':'XxWcirHIwVo',
+    'T-BAR ROWS':'TyLoy3n_a10',
+    'CLOSE-GRIP PULLDOWNS':'8hzVLzu-RJk',
+    'PREACHER CURLS':'R-8Sa0_qiws',
+    'ALTERNATING DUMBBELL CURLS':'sAq_ocpRh_I',
+    'FRONT SQUATS':'nmUof3vszxM',
+    'BULGARIAN SPLIT SQUATS':'hiLF_pF3EJM',
+    'LYING LEG CURLS':'vl5nUdE9mWM',
+    'GLUTE BRIDGES':'Q_Bpj91Yiis',
+    'CALF PRESS':'PYZY00hI43w'
+  };
+  const videoId = videos[String(name || '').trim().toUpperCase()];
+  return videoId ? `https://www.youtube.com/watch?v=${videoId}` : '';
 }
 
 function isDirectPlayableDemo(url){
@@ -2437,7 +2482,7 @@ function workoutGuideHtml(item){
     if(lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')){
       const embedUrl = getYouTubeEmbedUrl(demoUrl);
       media = embedUrl
-        ? `<div class="exercise-demo"><iframe src="${embedUrl}" allowfullscreen loading="lazy"></iframe></div>`
+        ? `<div class="exercise-demo"><iframe src="${embedUrl}" title="${escapeHtml(item.name)} demonstration" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe></div>`
         : `<a class="exercise-link" href="${demoUrl}" target="_blank" rel="noopener">Open YouTube Demo</a>`;
     }else if(lowerUrl.endsWith('.mp4') || lowerUrl.endsWith('.webm') || lowerUrl.endsWith('.ogg')){
       media = `<div class="exercise-demo"><video src="${demoUrl}" controls playsinline preload="metadata"></video></div>`;
@@ -2457,7 +2502,7 @@ function workoutGuideHtml(item){
     <div class="exercise-guide">
       ${media}
       <p>${instructions || 'Follow the real demo exactly. Stop if pain or dizziness occurs and ask staff for correction.'}</p>
-      ${fromExerciseDb ? '<span class="source-note">Demo GIF source: ExerciseDB / AscendAPI.</span>' : ''}
+      ${fromExerciseDb ? `<span class="source-note">Source: ${escapeHtml(item.embedded_source || 'ExerciseDB / AscendAPI')}.</span>` : ''}
     </div>
   `;
 }
@@ -2478,7 +2523,7 @@ function getYouTubeEmbedUrl(url){
       videoId = parsed.searchParams.get('v') || '';
     }
 
-    return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
+    return videoId ? `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&playsinline=1` : '';
   }catch(e){
     return '';
   }
