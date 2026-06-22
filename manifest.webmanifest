@@ -1,0 +1,19 @@
+{
+  "name": "Vajra Gym ERP",
+  "short_name": "Vajra Gym",
+  "description": "Mobile gym membership, payments, attendance and workout management.",
+  "start_url": "./vajra_gym_erp.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#07100d",
+  "theme_color": "#07100d",
+  "icons": [
+    {
+      "src": "vajra-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
