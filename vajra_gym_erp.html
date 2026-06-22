@@ -4,7 +4,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GYM ERP</title>
+<meta name="theme-color" content="#07100d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="vajra-icon.svg" type="image/svg+xml">
+<title>Vajra Gym ERP</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -498,11 +504,50 @@ button:hover{
     font-size:64px;
   }
 }
+/* Advanced ERP shell */
+:root{--bg:#07100d;--card:rgba(15,28,23,.92);--card-2:#13251e;--accent:#b7f34a;--accent-2:#43d17d;--text:#f5f7f6;--muted:#91a59b;--line:rgba(183,243,74,.14);--shadow:0 18px 48px rgba(0,0,0,.24)}
+body{min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(circle at 8% 0%,rgba(67,209,125,.14),transparent 30rem),radial-gradient(circle at 100% 30%,rgba(183,243,74,.08),transparent 28rem),var(--bg)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.15;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:32px 32px}
+header{backdrop-filter:blur(18px);background:rgba(4,12,9,.84);border-bottom:1px solid var(--line);padding:12px clamp(14px,3vw,34px);display:flex;align-items:center;justify-content:space-between;min-height:68px}
+.brand{display:flex;align-items:center;gap:11px}.brand-mark{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;color:#07100d;background:linear-gradient(135deg,var(--accent),var(--accent-2));font-size:21px;box-shadow:0 8px 24px rgba(183,243,74,.2)}
+.brand-copy strong{display:block;letter-spacing:.08em;font-size:15px}.brand-copy small{display:block;color:var(--muted);font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-top:2px}header h1{display:none}.top-actions{margin:0}.top-actions small{font-weight:650;color:#dce9e2}
+.container{width:min(1180px,100%);margin:0 auto;padding:24px 16px 105px}.card{padding:20px;border-radius:20px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(18,34,27,.96),rgba(10,22,17,.96));box-shadow:var(--shadow)}.card h2{font-size:18px;letter-spacing:-.02em}
+input,select,textarea{border:1px solid #263c32;background:#0d1c16;outline:none;transition:.2s}input:focus,select:focus,textarea:focus{border-color:var(--accent-2);box-shadow:0 0 0 3px rgba(67,209,125,.12)}button{background:linear-gradient(135deg,var(--accent),#84db43);transition:transform .18s,opacity .18s,box-shadow .18s}button:hover{opacity:1;transform:translateY(-1px);box-shadow:0 8px 22px rgba(183,243,74,.13)}button:disabled{cursor:not-allowed;transform:none}.logoutBtn{border:1px solid #2d4439;background:#15271f;color:white}
+.login-wrap{min-height:calc(100vh - 68px)}.login-card{padding:30px;box-shadow:0 30px 90px rgba(0,0,0,.45)}.login-eyebrow{color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.18em;text-align:center;text-transform:uppercase}.login-card h2{font-size:28px;margin:8px 0 4px}.login-subtitle{text-align:center;color:var(--muted);margin:0 0 20px;font-size:13px}.password-wrap{position:relative}.password-wrap input{padding-right:62px}.password-toggle{position:absolute;right:7px;top:7px;width:auto;padding:7px 9px;background:transparent;color:var(--muted);font-size:12px}.password-toggle:hover{box-shadow:none;transform:none;color:white}
+.dashboard-hero{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:18px;padding:4px 2px}.dashboard-hero h2{font-size:clamp(25px,4vw,38px);margin:5px 0;letter-spacing:-.045em}.dashboard-hero p{margin:0;color:var(--muted)}.eyebrow{color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.quick-actions{display:flex;gap:8px}.quick-actions button{width:auto;margin:0;padding:10px 14px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}.kpi-card{position:relative;overflow:hidden;margin:0;min-height:142px}.kpi-card::after{content:"";position:absolute;width:80px;height:80px;border-radius:50%;right:-20px;top:-20px;background:var(--kpi-color,var(--accent));opacity:.09}.kpi-icon{font-size:22px}.kpi-label{display:block;color:var(--muted);font-size:12px;margin:14px 0 5px}.kpi-value{display:block;font-size:29px;letter-spacing:-.04em}.kpi-note{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.dashboard-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}.panel-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.panel-header h2{margin:0}.panel-header span{font-size:11px;color:var(--muted)}.health-row{display:grid;grid-template-columns:110px 1fr;gap:18px;align-items:center}.health-ring{--value:0;position:relative;display:grid;place-items:center;width:108px;height:108px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--value)*1%),#22372e 0)}.health-ring::before{content:"";position:absolute;inset:10px;border-radius:50%;background:#102219}.health-ring strong,.health-ring small{position:relative;z-index:1}.health-ring strong{font-size:25px}.health-ring small{font-size:10px;color:var(--muted);margin-top:-26px}.mini-stat{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}.mini-stat:last-child{border:0}.mini-stat span{color:var(--muted)}
+.activity-list{display:grid;gap:8px}.activity-item{display:flex;align-items:center;gap:11px;padding:10px;border-radius:13px;background:#102219;border:1px solid rgba(255,255,255,.04)}.activity-avatar{display:grid;place-items:center;flex:0 0 35px;height:35px;border-radius:11px;background:#20392e;color:var(--accent);font-weight:800}.activity-copy{min-width:0;flex:1}.activity-copy strong,.activity-copy small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.activity-copy strong{font-size:13px}.activity-copy small{color:var(--muted);font-size:11px;margin-top:2px}.status-pill{padding:4px 7px;border-radius:20px;background:rgba(67,209,125,.12);color:#7ee2a7;font-size:9px;font-weight:800;letter-spacing:.05em}.status-pill.danger{color:#fda4af;background:rgba(239,68,68,.12)}.empty-state{padding:26px 12px;text-align:center;color:var(--muted);font-size:13px}
+.bottom-nav{left:50%;bottom:14px;transform:translateX(-50%);width:min(720px,calc(100% - 24px));padding:6px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:rgba(5,15,11,.91);backdrop-filter:blur(18px);box-shadow:0 18px 48px rgba(0,0,0,.45);z-index:300}.bottom-nav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 5px;border-radius:12px;color:var(--muted);font-size:10px;font-weight:650}.bottom-nav button:hover{transform:none;box-shadow:none}.bottom-nav button.active{background:#1c3329;color:var(--accent)}.nav-icon{font-size:16px;line-height:1.2}.stat,.member,.workout-row{background:#102219;border:1px solid rgba(255,255,255,.04)}
+@media(max-width:800px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.dashboard-grid{grid-template-columns:1fr}.dashboard-hero{align-items:start;flex-direction:column}.quick-actions{width:100%}.quick-actions button{flex:1}.top-actions small{display:none}}
+@media(max-width:520px){header{min-height:62px}.brand-mark{width:36px;height:36px}.container{padding:18px 12px 100px}.card{padding:16px;border-radius:17px}.kpi-grid{gap:8px}.kpi-card{min-height:125px}.kpi-value{font-size:24px}.health-row{grid-template-columns:94px 1fr}.health-ring{width:92px;height:92px}.bottom-nav{overflow-x:auto;justify-content:flex-start}.bottom-nav button{flex:0 0 68px}.login-card{padding:23px}}
+.dashboard-legacy{display:none}
+/* Pro mobile experience */
+.container{width:min(620px,100%)}.kpi-grid{grid-template-columns:repeat(2,1fr)}.dashboard-grid{grid-template-columns:1fr}
+.page-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:2px 2px 14px}.page-head h2{font-size:25px;margin:0;letter-spacing:-.04em}.page-head p{font-size:12px;color:var(--muted);margin:4px 0 0}.page-head button{width:auto;margin:0;padding:9px 12px;background:#173126;color:var(--accent)}
+.compact-card{box-shadow:none}.form-card.collapsed>*:not(.form-card-head){display:none}.form-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.form-card-head h2{margin:0}.form-card-head button{width:auto;margin:0;padding:7px 10px;background:#1b3429;color:var(--accent);font-size:12px}
+.filter-row{display:flex;gap:7px;overflow-x:auto;padding:2px 1px 10px;scrollbar-width:none}.filter-row::-webkit-scrollbar{display:none}.filter-chip{flex:0 0 auto;width:auto;margin:0;padding:8px 13px;border:1px solid #284337;border-radius:999px;background:#102119;color:var(--muted);font-size:12px}.filter-chip.active{background:var(--accent);border-color:var(--accent);color:#07100d}
+.list-summary{display:flex;justify-content:space-between;align-items:center;margin:1px 2px 8px;color:var(--muted);font-size:11px}.list-summary strong{color:var(--text)}
+.member-pro{padding:14px;margin-top:9px;border-radius:17px}.member-main{display:flex;align-items:center;gap:11px}.member-avatar{display:grid;place-items:center;flex:0 0 43px;height:43px;border-radius:14px;background:linear-gradient(135deg,#294c3c,#173026);color:var(--accent);font-weight:850;font-size:17px}.member-info{min-width:0;flex:1}.member-info strong,.member-info small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.member-info small{margin-top:3px}.member-badge{flex:0 0 auto;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:850;letter-spacing:.06em}.member-badge.active{background:rgba(67,209,125,.12);color:#7ee2a7}.member-badge.expired{background:rgba(239,68,68,.12);color:#fda4af}.member-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}.member-meta div{padding:8px;border-radius:10px;background:#0a1913}.member-meta small,.member-meta strong{display:block}.member-meta small{font-size:9px;color:var(--muted);text-transform:uppercase}.member-meta strong{font-size:11px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.member-pro .actions button{padding:9px;font-size:11px}.secondaryBtn{background:#1b352a;color:#dce9e2}.whatsappBtn{background:#173b2b;color:#8ee8ae}
+.payment-pro{display:flex;align-items:center;gap:11px}.payment-amount{margin-left:auto;text-align:right}.payment-amount strong,.payment-amount small{display:block}.payment-amount strong{color:var(--accent)}
+.week-chart{display:grid;grid-template-columns:repeat(7,1fr);align-items:end;gap:6px;height:92px;margin:8px 0 18px;padding-top:12px;border-bottom:1px solid var(--line)}.chart-day{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:end;gap:4px}.chart-bar{width:100%;max-width:24px;min-height:4px;border-radius:6px 6px 2px 2px;background:linear-gradient(var(--accent),var(--accent-2));opacity:.82}.chart-day small{font-size:8px;color:var(--muted);padding-bottom:4px}
+.fab{position:fixed;right:max(18px,calc((100vw - 620px)/2 + 18px));bottom:88px;z-index:350;width:52px;height:52px;margin:0;padding:0;border-radius:17px;font-size:27px;box-shadow:0 14px 35px rgba(0,0,0,.42)}
+.sheet-backdrop{position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.62);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:.2s}.sheet-backdrop.open{opacity:1;pointer-events:auto}.mobile-sheet{position:absolute;left:50%;bottom:0;transform:translate(-50%,105%);width:min(620px,100%);padding:10px 14px calc(18px + env(safe-area-inset-bottom));border-radius:24px 24px 0 0;background:#0c1c15;border:1px solid #294137;transition:transform .25s ease}.sheet-backdrop.open .mobile-sheet{transform:translate(-50%,0)}.sheet-handle{width:42px;height:4px;margin:2px auto 15px;border-radius:9px;background:#385146}.sheet-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.sheet-title h3{margin:0}.sheet-title button{width:auto;margin:0;padding:7px 10px;background:#183126;color:white}.sheet-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.sheet-action{display:flex;align-items:center;gap:10px;text-align:left;padding:13px;background:#14291f;color:white}.sheet-action span{font-size:18px}.sheet-action small{display:block;color:var(--muted);font-weight:500;margin-top:2px}
+.toast-stack{position:fixed;z-index:1200;top:78px;left:50%;transform:translateX(-50%);width:min(440px,calc(100% - 24px));display:grid;gap:8px;pointer-events:none}.toast{padding:12px 14px;border-radius:14px;background:#183328;border:1px solid #315444;box-shadow:0 15px 45px rgba(0,0,0,.35);animation:toastIn .25s ease;color:white;font-size:13px}.toast.error-toast{background:#3a1719;border-color:#6b292d}.toast.out{opacity:0;transform:translateY(-8px);transition:.25s}@keyframes toastIn{from{opacity:0;transform:translateY(-8px)}}
+.member-home-hero{position:relative;overflow:hidden;padding:22px;background:linear-gradient(135deg,#1b3829,#0b1b14)}.member-home-hero::after{content:"";position:absolute;width:190px;height:190px;border-radius:50%;right:-75px;top:-90px;background:var(--accent);opacity:.09}.member-home-hero h2{font-size:29px;margin:7px 0 4px}.member-home-hero p{margin:0;color:var(--muted);font-size:12px}.member-plan-card{margin-top:16px;padding:13px;border-radius:15px;background:rgba(3,12,8,.45);border:1px solid rgba(183,243,74,.14)}.plan-top{display:flex;justify-content:space-between;gap:10px}.plan-top small,.plan-top strong{display:block}.plan-top small{color:var(--muted);font-size:9px;letter-spacing:.08em}.plan-top strong{margin-top:3px;font-size:13px}.plan-progress{height:7px;margin-top:12px;border-radius:9px;background:#263c32;overflow:hidden}.plan-progress span{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--accent-2),var(--accent));transition:width .4s}.member-kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:8px 0}.member-mini-kpi{margin:0;padding:14px;min-height:103px}.member-mini-kpi span{display:block;color:var(--muted);font-size:10px}.member-mini-kpi strong{display:block;font-size:25px;margin:10px 0 2px}.member-mini-kpi small{color:var(--accent);font-size:9px}.today-workout-card{padding:17px}.workout-progress-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.workout-progress-head h2{margin:0}.progress-ring-small{--value:0;display:grid;place-items:center;width:54px;height:54px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--value)*1%),#243a30 0)}.progress-ring-small::after{content:attr(data-label);display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:#102219;font-size:10px;font-weight:800}.achievement-row{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none}.achievement{flex:0 0 auto;padding:10px 12px;border-radius:13px;background:#102219;border:1px solid #223c30;color:var(--muted);font-size:10px}.achievement.unlocked{color:#07100d;background:linear-gradient(135deg,var(--accent),#7cdb43);border-color:transparent}.insight-item{display:flex;gap:11px;padding:12px 0;border-bottom:1px solid var(--line)}.insight-item:last-child{border:0}.insight-icon{display:grid;place-items:center;flex:0 0 36px;height:36px;border-radius:11px;background:#1d382b;color:var(--accent)}.insight-copy strong,.insight-copy small{display:block}.insight-copy strong{font-size:12px}.insight-copy small{color:var(--muted);font-size:10px;margin-top:3px;line-height:1.4}
+.week-plan{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none}.plan-day{flex:0 0 105px;padding:11px;border-radius:14px;background:#0d1d16;border:1px solid #213b2f}.plan-day.today{border-color:var(--accent);background:#173024}.plan-day small,.plan-day strong,.plan-day span{display:block}.plan-day small{color:var(--accent);font-size:9px}.plan-day strong{font-size:11px;margin:7px 0 4px}.plan-day span{font-size:9px;color:var(--muted)}
+.tool-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.tool-card{margin:0;padding:15px}.tool-card.full{grid-column:1/-1}.tool-card h3{font-size:14px;margin:0 0 4px}.tool-card>p{font-size:10px;color:var(--muted);margin:0 0 10px;line-height:1.45}.tool-value{font-size:29px;font-weight:850;letter-spacing:-.04em;margin:9px 0}.tool-value small{font-size:11px;color:var(--muted);font-weight:600}.stepper{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:6px}.stepper button{height:42px;margin:0;padding:0}.stepper strong{text-align:center;font-size:21px}.range-label{display:flex;justify-content:space-between;margin-top:10px;color:var(--muted);font-size:9px}input[type="range"]{padding:0;border:0;box-shadow:none;accent-color:var(--accent)}.readiness-score{display:flex;align-items:center;gap:13px;padding:11px;border-radius:14px;background:#0d1c16}.readiness-score strong{font-size:29px;color:var(--accent)}.readiness-score span,.readiness-score small{display:block}.readiness-score small{color:var(--muted);font-size:9px;margin-top:2px}.goal-box{padding:11px;border-radius:13px;background:#0d1c16}.goal-box strong,.goal-box small{display:block}.goal-box small{color:var(--muted);margin-top:4px}.record-row{display:grid;grid-template-columns:1fr auto;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}.record-row:last-child{border:0}.record-row strong,.record-row small{display:block}.record-row small{font-size:9px;color:var(--muted);margin-top:3px}.record-value{text-align:right;color:var(--accent)}
+.bottom-nav{width:min(580px,calc(100% - 18px));justify-content:space-around}.bottom-nav button{flex:1}.nav-extra{display:flex!important}.nav-extra.hidden{display:none!important}.nav-sheet-only{display:none!important}
+@media(max-width:620px){body::before{display:none}header{padding:10px 14px}.brand-copy small{display:none}.container{padding:15px 11px 98px}.page{padding-bottom:8px}.dashboard-hero{margin-bottom:13px}.dashboard-hero .eyebrow{display:none}.dashboard-hero h2{font-size:25px}.dashboard-hero p{font-size:11px}.quick-actions{display:none}.kpi-grid{gap:7px;margin-bottom:8px}.kpi-card{min-height:108px;padding:13px}.kpi-icon{font-size:16px}.kpi-label{font-size:10px;margin:10px 0 3px}.kpi-value{font-size:22px}.kpi-note{font-size:9px}.dashboard-grid{gap:8px}.dashboard-grid>.card{padding:14px}.panel-header h2{font-size:15px}.health-row{grid-template-columns:86px 1fr;gap:12px}.health-ring{width:84px;height:84px}.health-ring::before{inset:8px}.health-ring strong{font-size:20px}.mini-stat{padding:7px 0;font-size:11px}.activity-item{padding:9px}.bottom-nav{bottom:8px;border-radius:19px;padding:5px}.bottom-nav button{flex:1 0 0;padding:7px 2px;font-size:9px}.nav-icon{font-size:17px}.card{box-shadow:none}.fab{bottom:78px;right:15px}}
 </style>
 </head>
 <body>
 
 <header>
+  <div class="brand">
+    <div class="brand-mark">V</div>
+    <div class="brand-copy"><strong>VAJRA GYM</strong><small>Performance ERP</small></div>
+  </div>
   <h1>🏋️ GYM ERP</h1>
   <div id="appTopActions" class="top-actions hidden">
     <small id="currentUserLabel"></small>
@@ -512,10 +557,15 @@ button:hover{
 
 <div id="loginScreen" class="login-wrap">
   <div id="loginCard" class="card login-card">
-    <h2>Login</h2>
+    <div class="login-eyebrow">Secure access</div>
+    <h2>Welcome back</h2>
+    <p class="login-subtitle">Manage members, collections and performance.</p>
     <input type="text" id="loginUsername" class="uppercase" placeholder="USER NAME" oninput="forceUppercase(this)">
-    <input type="password" id="loginPassword" inputmode="numeric" pattern="[0-9]*" placeholder="NUMBER PASSWORD" oninput="forceNumbers(this)">
-    <button onclick="login()">Open App</button>
+    <div class="password-wrap">
+      <input type="password" id="loginPassword" inputmode="numeric" pattern="[0-9]*" placeholder="NUMBER PASSWORD" oninput="forceNumbers(this)">
+      <button type="button" class="password-toggle" onclick="togglePassword()">Show</button>
+    </div>
+    <button onclick="login()">Open Dashboard</button>
     <div id="loginMsg"></div>
   </div>
 </div>
@@ -523,7 +573,28 @@ button:hover{
 <div id="appShell" class="container hidden">
 
 <div id="dashboardPage" class="page active">
-  <div class="card">
+  <div class="dashboard-hero">
+    <div><div class="eyebrow">Command center</div><h2>Good <span id="dayGreeting">day</span>, <span id="dashboardUserName">Coach</span>.</h2><p id="dashboardDate">Your gym at a glance.</p></div>
+    <div class="quick-actions"><button onclick="showPage('membersPage')">+ New member</button><button onclick="showPage('paymentsPage')">₹ Add payment</button></div>
+  </div>
+  <div class="kpi-grid">
+    <div class="card kpi-card" style="--kpi-color:#b7f34a"><span class="kpi-icon">👥</span><span class="kpi-label">Total members</span><strong class="kpi-value" id="advancedTotalMembers">0</strong><small class="kpi-note">All registered members</small></div>
+    <div class="card kpi-card" style="--kpi-color:#43d17d"><span class="kpi-icon">✓</span><span class="kpi-label">Active members</span><strong class="kpi-value" id="advancedActiveMembers">0</strong><small class="kpi-note" id="activeRateNote">0% retention</small></div>
+    <div class="card kpi-card" style="--kpi-color:#ffb84d"><span class="kpi-icon">₹</span><span class="kpi-label">Today's collection</span><strong class="kpi-value" id="advancedTodayCollection">₹0</strong><small class="kpi-note" id="monthlyCollectionNote">₹0 this month</small></div>
+    <div class="card kpi-card" style="--kpi-color:#65b8ff"><span class="kpi-icon">⚡</span><span class="kpi-label">Check-ins today</span><strong class="kpi-value" id="todayAttendance">0</strong><small class="kpi-note" id="workoutActivityNote">0 workouts this month</small></div>
+  </div>
+  <div class="dashboard-grid">
+    <div class="card">
+      <div class="panel-header"><h2>Membership health</h2><span>LIVE STATUS</span></div>
+      <div class="health-row"><div class="health-ring" id="healthRing"><strong id="healthPercent">0%</strong><small>ACTIVE</small></div><div><div class="mini-stat"><span>Active</span><strong id="activeMembersDetail">0</strong></div><div class="mini-stat"><span>Expiring in 7 days</span><strong id="expiringMembers">0</strong></div><div class="mini-stat"><span>Expired</span><strong id="advancedExpiredMembers">0</strong></div></div></div>
+      <div class="panel-header" style="margin-top:20px"><h2>Renewal watchlist</h2><span>NEXT 7 DAYS</span></div>
+      <div id="expiryWatchlist" class="activity-list"><div class="empty-state">Loading memberships…</div></div>
+    </div>
+    <div class="card"><div class="panel-header"><h2>7-day activity</h2><span id="liveClock">LIVE</span></div><div id="weeklyAttendanceChart" class="week-chart"></div><div class="panel-header"><h2>Today's check-ins</h2><span id="todayCheckinLabel">0 VISITS</span></div><div id="todayActivityList" class="activity-list"><div class="empty-state">Loading check-ins…</div></div></div>
+  </div>
+  <div class="card"><div class="panel-header"><h2>Retention radar</h2><span id="riskCountLabel">ANALYZING</span></div><div id="retentionRadar" class="activity-list"><div class="empty-state">Finding members who may need attention…</div></div></div>
+  <div class="card"><div class="panel-header"><h2>Smart insights</h2><span>THIS MONTH</span></div><div id="ownerInsightList"></div></div>
+  <div class="card dashboard-legacy">
     <h2>Dashboard</h2>
     <div class="stat">
       <span>Total Members</span>
@@ -539,7 +610,7 @@ button:hover{
     </div>
   </div>
 
-  <div class="card">
+  <div class="card dashboard-legacy">
     <h2>Today Collections</h2>
     <div class="stat">
       <span>₹ Collection</span>
@@ -548,9 +619,39 @@ button:hover{
   </div>
 </div>
 
+<div id="memberHomePage" class="page">
+  <div class="card member-home-hero">
+    <div class="eyebrow">My Vajra</div><h2 id="memberHomeGreeting">Ready to train?</h2><p id="memberHomeDate">Your progress lives here.</p>
+    <div class="member-plan-card"><div class="plan-top"><div><small>MEMBERSHIP</small><strong id="memberHomePlan">-</strong></div><div style="text-align:right"><small id="memberHomeDaysLabel">DAYS LEFT</small><strong id="memberHomeDays">-</strong></div></div><div class="plan-progress"><span id="memberPlanProgress" style="width:0%"></span></div></div>
+  </div>
+  <div class="member-kpis">
+    <div class="card member-mini-kpi"><span>Current streak</span><strong id="memberStreak">0</strong><small>DAYS ACTIVE</small></div>
+    <div class="card member-mini-kpi"><span>Workouts this month</span><strong id="memberMonthWorkouts">0</strong><small>SESSIONS SAVED</small></div>
+    <div class="card member-mini-kpi"><span>Visits this month</span><strong id="memberMonthVisits">0</strong><small>GYM CHECK-INS</small></div>
+    <div class="card member-mini-kpi"><span>Plan completion</span><strong id="memberTodayProgress">0%</strong><small>TODAY</small></div>
+  </div>
+  <div class="card today-workout-card"><div class="workout-progress-head"><div><div class="eyebrow" id="memberWorkoutDay">TODAY</div><h2 id="memberWorkoutFocus">Today's training</h2><p class="muted" id="memberWorkoutSummary">Loading your plan…</p></div><div class="progress-ring-small" id="memberWorkoutRing" data-label="0%"></div></div><button onclick="showPage('workoutPage')">Open today's workout</button></div>
+  <div class="card"><div class="panel-header"><h2>My week</h2><span>6-DAY PLAN</span></div><div id="memberWeekPlan" class="week-plan"></div></div>
+  <div class="card"><div class="panel-header"><h2>Achievements</h2><span>YOUR MOMENTUM</span></div><div id="memberAchievements" class="achievement-row"></div></div>
+  <div class="card"><div class="panel-header"><h2>Recent progress</h2><span>LAST 5</span></div><div id="memberRecentProgress" class="activity-list"></div></div>
+</div>
+
+<div id="memberToolsPage" class="page">
+  <div class="page-head"><div><h2>My tools</h2><p>Recovery, hydration, goals and records</p></div></div>
+  <div class="tool-grid">
+    <div class="card tool-card full"><div class="panel-header"><h2>Daily readiness</h2><span>PRIVATE TO THIS DEVICE</span></div><p>Use this quick self-check to adjust effort. It is not medical advice.</p><label class="muted">Sleep: <strong id="sleepValue">7</strong> hours</label><input type="range" id="readinessSleep" min="3" max="10" step="0.5" value="7" oninput="updateReadinessPreview()"><div class="range-label"><span>3h</span><span>10h</span></div><label class="muted">Energy: <strong id="energyValue">3</strong>/5</label><input type="range" id="readinessEnergy" min="1" max="5" value="3" oninput="updateReadinessPreview()"><label class="muted">Soreness: <strong id="sorenessValue">2</strong>/5</label><input type="range" id="readinessSoreness" min="1" max="5" value="2" oninput="updateReadinessPreview()"><div class="readiness-score"><strong id="readinessScore">70</strong><div><span id="readinessTitle">Ready to train</span><small id="readinessAdvice">Warm up well and follow your plan.</small></div></div><button onclick="saveReadiness()">Save today's check-in</button></div>
+    <div class="card tool-card"><h3>Hydration</h3><p>Track glasses today.</p><div class="tool-value"><span id="waterCount">0</span><small> / 8</small></div><div class="stepper"><button onclick="changeWater(-1)">−</button><strong>💧</strong><button onclick="changeWater(1)">+</button></div></div>
+    <div class="card tool-card"><h3>My goal</h3><p>Keep one focus visible.</p><div class="goal-box"><strong id="memberGoalText">Set a goal</strong><small id="memberGoalDate">Tap below to update</small></div><button onclick="editMemberGoal()">Update goal</button></div>
+    <div class="card tool-card full"><h3>Estimated one-rep max</h3><p>A training estimate using the Epley formula—not a requirement to attempt a maximum lift.</p><div class="workout-grid"><input type="number" id="oneRmWeight" min="0" placeholder="Weight (kg)"><input type="number" id="oneRmReps" min="1" max="20" placeholder="Reps"></div><button onclick="calculateOneRm()">Calculate estimate</button><div id="oneRmResult" class="success hidden"></div></div>
+    <div class="card tool-card full"><h3>BMI calculator</h3><p>A simple height/weight calculation. It does not diagnose health or body composition.</p><div class="workout-grid"><input type="number" id="bmiWeight" min="0" placeholder="Weight (kg)"><input type="number" id="bmiHeight" min="0" placeholder="Height (cm)"></div><button onclick="calculateBmi()">Calculate BMI</button><div id="bmiResult" class="success hidden"></div></div>
+    <div class="card tool-card full"><div class="panel-header"><h2>Personal records</h2><span>BEST LOGGED SETS</span></div><div id="personalRecords"><div class="empty-state">Loading records…</div></div></div>
+  </div>
+</div>
+
 <div id="membersPage" class="page">
-  <div class="card">
-    <h2>Add Member</h2>
+  <div class="page-head"><div><h2>Members</h2><p>Manage your gym community</p></div><button onclick="toggleFormCard('memberFormCard',false)">+ Add</button></div>
+  <div id="memberFormCard" class="card form-card collapsed">
+    <div class="form-card-head"><h2>Add member</h2><button onclick="toggleFormCard('memberFormCard')">Open</button></div>
 
     <input type="text" id="memberName" class="uppercase" placeholder="MEMBER NAME" oninput="forceUppercase(this)">
     <input type="text" id="memberPhone" placeholder="Phone Number">
@@ -571,17 +672,18 @@ button:hover{
     <div id="msg"></div>
   </div>
 
-  <div class="card">
-    <h2>Search Members</h2>
+  <div class="card compact-card">
     <input type="text" id="searchInput" placeholder="Search Name / Phone" onkeyup="loadMembers()">
   </div>
-
+  <div class="filter-row"><button class="filter-chip active" data-member-filter="all" onclick="setMemberFilter('all',this)">All</button><button class="filter-chip" data-member-filter="active" onclick="setMemberFilter('active',this)">Active</button><button class="filter-chip" data-member-filter="expiring" onclick="setMemberFilter('expiring',this)">Expiring</button><button class="filter-chip" data-member-filter="expired" onclick="setMemberFilter('expired',this)">Expired</button></div>
+  <div class="list-summary"><span id="memberListSummary">Loading members…</span><button class="filter-chip" onclick="exportMembersCsv()">Export CSV</button></div>
   <div id="memberList"></div>
 </div>
 
 <div id="paymentsPage" class="page">
-  <div class="card">
-    <h2>Payment Entry</h2>
+  <div class="page-head"><div><h2>Payments</h2><p id="paymentPageSummary">Collections and receipts</p></div><button onclick="toggleFormCard('paymentFormCard',false)">+ Collect</button></div>
+  <div id="paymentFormCard" class="card form-card collapsed">
+    <div class="form-card-head"><h2>Collect payment</h2><button onclick="toggleFormCard('paymentFormCard')">Open</button></div>
 
     <select id="paymentMember"></select>
 
@@ -597,6 +699,7 @@ button:hover{
 </div>
 
 <div id="workoutPage" class="page">
+  <div class="page-head"><div><h2>Workouts</h2><p>Plans, targets and progress</p></div></div>
   <div class="card">
     <h2>Workout</h2>
     <div id="workoutMemberPickerWrap">
@@ -620,8 +723,8 @@ button:hover{
     </select>
   </div>
 
-  <div id="workoutEditorCard" class="card">
-    <h2>Add / Edit Workout</h2>
+  <div id="workoutEditorCard" class="card form-card collapsed">
+    <div class="form-card-head"><h2>Add / edit workout</h2><button onclick="toggleFormCard('workoutEditorCard')">Open</button></div>
     <input type="hidden" id="workoutEditId">
     <select id="workoutDay">
       <option value="1">DAY 1</option>
@@ -659,6 +762,7 @@ button:hover{
 </div>
 
 <div id="attendancePage" class="page">
+  <div class="page-head"><div><h2>Attendance</h2><p>Fast member check-in</p></div></div>
   <div class="card">
     <h2>Attendance</h2>
     <select id="attendanceMemberSelect"></select>
@@ -672,6 +776,7 @@ button:hover{
 </div>
 
 <div id="workoutHistoryPage" class="page">
+  <div class="page-head"><div><h2>History</h2><p>Completed workout performance</p></div></div>
   <div class="card">
     <h2>Workout History</h2>
     <div id="historyMemberPickerWrap">
@@ -697,15 +802,28 @@ button:hover{
 </div>
 
 <div id="bottomNav" class="bottom-nav hidden">
-  <button class="nav-owner-staff" onclick="showPage('dashboardPage')">Dashboard</button>
-  <button class="nav-owner-staff" onclick="showPage('membersPage')">Members</button>
-  <button class="nav-owner-staff" onclick="showPage('paymentsPage')">Payments</button>
-  <button class="nav-owner-staff" onclick="showPage('workoutPage')">Workout</button>
-  <button class="nav-owner-staff" onclick="showPage('attendancePage')">Attendance</button>
-  <button class="nav-owner-staff" onclick="showPage('workoutHistoryPage')">History</button>
-  <button class="nav-member-only" onclick="showPage('workoutPage')">Workout</button>
-  <button class="nav-member-only" onclick="showPage('workoutHistoryPage')">History</button>
+  <button class="nav-owner-staff" data-page="dashboardPage" onclick="showPage('dashboardPage')"><span class="nav-icon">⌂</span>Dashboard</button>
+  <button class="nav-owner-staff" data-page="membersPage" onclick="showPage('membersPage')"><span class="nav-icon">♙</span>Members</button>
+  <button class="nav-owner-staff" data-page="paymentsPage" onclick="showPage('paymentsPage')"><span class="nav-icon">₹</span>Payments</button>
+  <button class="nav-owner-staff" data-page="workoutPage" onclick="showPage('workoutPage')"><span class="nav-icon">◆</span>Workout</button>
+  <button class="nav-owner-staff nav-sheet-only" data-page="attendancePage" onclick="showPage('attendancePage')"><span class="nav-icon">✓</span>Attendance</button>
+  <button class="nav-owner-staff nav-sheet-only" data-page="workoutHistoryPage" onclick="showPage('workoutHistoryPage')"><span class="nav-icon">◷</span>History</button>
+  <button class="nav-owner-staff nav-extra" onclick="openActionSheet('more')"><span class="nav-icon">•••</span>More</button>
+  <button class="nav-member-only" data-page="memberHomePage" onclick="showPage('memberHomePage')"><span class="nav-icon">⌂</span>Home</button>
+  <button class="nav-member-only" data-page="workoutPage" onclick="showPage('workoutPage')"><span class="nav-icon">◆</span>Workout</button>
+  <button class="nav-member-only" data-page="workoutHistoryPage" onclick="showPage('workoutHistoryPage')"><span class="nav-icon">◷</span>History</button>
+  <button class="nav-member-only" data-page="memberToolsPage" onclick="showPage('memberToolsPage')"><span class="nav-icon">＋</span>Tools</button>
 </div>
+
+<button id="quickFab" class="fab hidden" onclick="openActionSheet('quick')" aria-label="Quick actions">+</button>
+<div id="sheetBackdrop" class="sheet-backdrop" onclick="closeActionSheet(event)">
+  <div class="mobile-sheet" role="dialog" aria-modal="true" aria-label="App actions" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title"><h3 id="sheetHeading">Quick actions</h3><button onclick="closeActionSheet()">Close</button></div>
+    <div id="sheetActions" class="sheet-grid"></div>
+  </div>
+</div>
+<div id="toastStack" class="toast-stack" aria-live="polite"></div>
 
 <div id="fullScreenTimer" class="timerOverlay hidden">
   <div class="timerPanel">
@@ -726,6 +844,8 @@ let selectedWorkoutMember = null;
 let workoutTimers = {};
 let timerAudioCtx = null;
 let lockedWorkoutSaves = new Set();
+let memberStatusFilter = 'all';
+let deferredInstallPrompt = null;
 
 function forceUppercase(input){
   input.value = input.value.toUpperCase();
@@ -733,6 +853,78 @@ function forceUppercase(input){
 
 function forceNumbers(input){
   input.value = input.value.replace(/\D/g,'');
+}
+
+function togglePassword(){
+  const input = document.getElementById('loginPassword');
+  const button = document.querySelector('.password-toggle');
+  input.type = input.type === 'password' ? 'text' : 'password';
+  button.innerText = input.type === 'password' ? 'Show' : 'Hide';
+}
+
+function formatCurrency(value){
+  return new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(Number(value || 0));
+}
+
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
+}
+
+function notify(message,type='success'){
+  const stack = document.getElementById('toastStack');
+  const toast = document.createElement('div');
+  toast.className = `toast${type === 'error' ? ' error-toast' : ''}`;
+  toast.textContent = message;
+  stack.appendChild(toast);
+  setTimeout(()=>toast.classList.add('out'),2600);
+  setTimeout(()=>toast.remove(),2900);
+}
+
+function toggleFormCard(id,forceCollapse){
+  const card = document.getElementById(id);
+  const collapse = typeof forceCollapse === 'boolean' ? forceCollapse : !card.classList.contains('collapsed');
+  card.classList.toggle('collapsed',collapse);
+  const button = card.querySelector('.form-card-head button');
+  if(button) button.textContent = collapse ? 'Open' : 'Close';
+  if(!collapse) setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
+
+function openActionSheet(mode='quick'){
+  const heading = document.getElementById('sheetHeading');
+  const actions = document.getElementById('sheetActions');
+  const isMember = currentUser?.role === 'member';
+  heading.textContent = mode === 'more' ? 'More tools' : 'Quick actions';
+  if(isMember){
+    actions.innerHTML = `<button class="sheet-action" onclick="sheetGo('memberHomePage')"><span>⌂</span><div>My home<small>Progress overview</small></div></button><button class="sheet-action" onclick="sheetGo('workoutPage')"><span>◆</span><div>My workout<small>Open today's plan</small></div></button><button class="sheet-action" onclick="sheetGo('workoutHistoryPage')"><span>◷</span><div>My history<small>View progress</small></div></button><button class="sheet-action" onclick="sheetGo('memberToolsPage')"><span>＋</span><div>My tools<small>Readiness and records</small></div></button><button class="sheet-action" onclick="logout()"><span>↪</span><div>Sign out<small>Close this session</small></div></button>`;
+  }else{
+    actions.innerHTML = `<button class="sheet-action" onclick="sheetGo('membersPage','memberFormCard')"><span>＋</span><div>New member<small>Create access</small></div></button><button class="sheet-action" onclick="sheetGo('paymentsPage','paymentFormCard')"><span>₹</span><div>Collect fee<small>Save a payment</small></div></button><button class="sheet-action" onclick="sheetGo('attendancePage')"><span>✓</span><div>Check in<small>Mark attendance</small></div></button><button class="sheet-action" onclick="sheetGo('workoutHistoryPage')"><span>◷</span><div>History<small>Workout records</small></div></button><button class="sheet-action" onclick="exportMembersCsv()"><span>⇩</span><div>Export members<small>Download CSV</small></div></button>${deferredInstallPrompt ? '<button class="sheet-action" onclick="installApp()"><span>□</span><div>Install app<small>Add to home screen</small></div></button>' : ''}<button class="sheet-action" onclick="logout()"><span>↪</span><div>Sign out<small>Close this session</small></div></button>`;
+  }
+  document.getElementById('sheetBackdrop').classList.add('open');
+}
+
+function closeActionSheet(event){
+  if(event && event.target !== document.getElementById('sheetBackdrop')) return;
+  document.getElementById('sheetBackdrop').classList.remove('open');
+}
+
+function sheetGo(page,formId){
+  closeActionSheet();
+  showPage(page);
+  if(formId) toggleFormCard(formId,false);
+}
+
+async function installApp(){
+  if(!deferredInstallPrompt){ notify('Use your browser menu to add this app to the home screen'); return; }
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  closeActionSheet();
+}
+
+function setMemberFilter(filter,button){
+  memberStatusFilter = filter;
+  document.querySelectorAll('[data-member-filter]').forEach(chip=>chip.classList.toggle('active',chip === button));
+  loadMembers();
 }
 
 function showExpiredLoginWarning(member){
@@ -804,6 +996,11 @@ async function login(){
   const msg = document.getElementById('loginMsg');
   msg.innerHTML = '';
 
+  if(!username || !password){
+    msg.innerHTML = '<div class="error">Enter your user name and password</div>';
+    return;
+  }
+
   const user = await findUser(username, password);
 
   if(!user){
@@ -837,6 +1034,8 @@ function logout(){
   document.getElementById('appShell').classList.add('hidden');
   document.getElementById('bottomNav').classList.add('hidden');
   document.getElementById('appTopActions').classList.add('hidden');
+  document.getElementById('quickFab').classList.add('hidden');
+  closeActionSheet();
 }
 
 function openAppForUser(){
@@ -844,6 +1043,7 @@ function openAppForUser(){
   document.getElementById('appShell').classList.remove('hidden');
   document.getElementById('bottomNav').classList.remove('hidden');
   document.getElementById('appTopActions').classList.remove('hidden');
+  document.getElementById('quickFab').classList.remove('hidden');
   document.getElementById('currentUserLabel').innerText =
     `${currentUser.displayName || currentUser.username} (${currentUser.role.toUpperCase()})`;
 
@@ -854,24 +1054,31 @@ function openAppForUser(){
   });
 
   document.querySelectorAll('.nav-member-only').forEach(btn=>{
-    btn.style.display = isMember ? 'block' : 'none';
+    btn.style.display = isMember ? 'flex' : 'none';
   });
 
-  showPage(isMember ? 'workoutPage' : 'dashboardPage');
+  showPage(isMember ? 'memberHomePage' : 'dashboardPage');
 }
 
 function canOpenPage(id){
   if(!currentUser) return false;
 
   if(currentUser.role === 'member'){
-    return ['workoutPage','workoutHistoryPage'].includes(id);
+    return ['memberHomePage','workoutPage','workoutHistoryPage','memberToolsPage'].includes(id);
   }
 
   return ['dashboardPage','membersPage','paymentsPage','workoutPage','attendancePage','workoutHistoryPage'].includes(id);
 }
 
 function todayText(){
-  return new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const offset = now.getTimezoneOffset() * 60000;
+  return new Date(now.getTime() - offset).toISOString().split('T')[0];
+}
+
+function localDateKey(value){
+  const date = value ? new Date(value) : new Date();
+  return new Date(date.getTime()-date.getTimezoneOffset()*60000).toISOString().split('T')[0];
 }
 
 function playTimerAlarm(){
@@ -906,9 +1113,21 @@ function showPage(id){
 
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.querySelectorAll('#bottomNav button').forEach(button=>{
+    button.classList.toggle('active', button.dataset.page === id);
+  });
 
   if(id === 'membersPage'){
     loadMembers();
+  }
+
+  if(id === 'memberHomePage'){
+    loadMemberHome();
+  }
+
+  if(id === 'memberToolsPage'){
+    loadMemberTools();
   }
 
   if(id === 'paymentsPage'){
@@ -931,6 +1150,94 @@ function showPage(id){
   if(id === 'workoutHistoryPage'){
     loadWorkoutHistoryPage();
   }
+}
+
+async function loadMemberHome(){
+  if(currentUser?.role !== 'member') return;
+  const member = await getMemberForUser(currentUser);
+  if(!member){ notify('Member profile could not be loaded','error'); return; }
+  const today = todayText();
+  const monthStart = `${today.slice(0,7)}-01`;
+  const historyStart = new Date(`${today}T12:00:00`);
+  historyStart.setDate(historyStart.getDate()-60);
+  const historyStartText = historyStart.toISOString().split('T')[0];
+  const weekday = new Date().getDay();
+  const dayNo = weekday === 0 ? 1 : Math.min(6,weekday);
+
+  const [attendanceResult,logsResult,workoutsResult] = await Promise.all([
+    sb.from('gym_attendance').select('attendance_date,check_in_time').eq('member_id',member.id).gte('attendance_date',historyStartText).order('attendance_date',{ascending:false}),
+    sb.from('gym_workout_logs').select('*,gym_workouts(name,focus,day_no,type)').eq('member_id',member.id).gte('completed_at',`${monthStart}T00:00:00`).order('completed_at',{ascending:false}),
+    sb.from('gym_workouts').select('*').eq('member_id',member.id).order('day_no').order('id')
+  ]);
+  const attendance = attendanceResult.data || [];
+  const logs = logsResult.data || [];
+  const allWorkouts = workoutsResult.data || [];
+  const workouts = allWorkouts.filter(workout=>Number(workout.day_no) === dayNo);
+  const todayLogs = logs.filter(log=>localDateKey(log.completed_at) === today);
+  const completedWorkoutIds = new Set(todayLogs.map(log=>String(log.workout_id)));
+  const completedToday = workouts.filter(workout=>completedWorkoutIds.has(String(workout.id))).length;
+  const completion = workouts.length ? Math.min(100,Math.round(completedToday/workouts.length*100)) : 0;
+  const monthVisits = new Set(attendance.filter(row=>row.attendance_date >= monthStart).map(row=>row.attendance_date)).size;
+
+  const attendanceDays = new Set(attendance.map(row=>row.attendance_date));
+  let streak = 0;
+  const cursor = new Date(`${today}T12:00:00`);
+  if(!attendanceDays.has(today)) cursor.setDate(cursor.getDate()-1);
+  while(attendanceDays.has(cursor.toISOString().split('T')[0])){
+    streak++;
+    cursor.setDate(cursor.getDate()-1);
+  }
+
+  const join = member.join_date ? new Date(`${member.join_date}T12:00:00`) : new Date();
+  const expiry = member.expiry_date ? new Date(`${member.expiry_date}T23:59:59`) : new Date();
+  const now = new Date();
+  const totalPlanDays = Math.max(1,Math.ceil((expiry-join)/86400000));
+  const usedPlanDays = Math.max(0,Math.ceil((now-join)/86400000));
+  const planProgress = Math.min(100,Math.round(usedPlanDays/totalPlanDays*100));
+  const daysLeft = Math.max(0,Math.ceil((expiry-now)/86400000));
+  const expired = member.expiry_date && member.expiry_date < today;
+  const firstName = String(member.name || 'Athlete').split(' ')[0];
+
+  document.getElementById('memberHomeGreeting').innerText = `${new Date().getHours()<12?'Good morning':new Date().getHours()<17?'Good afternoon':'Good evening'}, ${firstName}`;
+  document.getElementById('memberHomeDate').innerText = new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('memberHomePlan').innerText = `${member.plan || 'Membership'} · ${expired ? 'Expired':'Active'}`;
+  document.getElementById('memberHomeDays').innerText = expired ? 'Renew now' : daysLeft;
+  document.getElementById('memberHomeDaysLabel').innerText = expired ? 'STATUS' : 'DAYS LEFT';
+  document.getElementById('memberPlanProgress').style.width = `${planProgress}%`;
+  document.getElementById('memberStreak').innerText = streak;
+  document.getElementById('memberMonthWorkouts').innerText = logs.length;
+  document.getElementById('memberMonthVisits').innerText = monthVisits;
+  document.getElementById('memberTodayProgress').innerText = `${completion}%`;
+  document.getElementById('memberWorkoutDay').innerText = `DAY ${dayNo} · ${completedToday}/${workouts.length} COMPLETE`;
+  document.getElementById('memberWorkoutFocus').innerText = workouts[0]?.focus || (workouts.length ? 'Today’s training' : 'Recovery day');
+  document.getElementById('memberWorkoutSummary').innerText = workouts.length ? `${workouts.length} movements planned. Keep your form clean and finish strong.` : 'No workout is assigned for today. Ask your coach for a plan.';
+  const ring = document.getElementById('memberWorkoutRing');
+  ring.style.setProperty('--value',completion);
+  ring.dataset.label = `${completion}%`;
+
+  document.getElementById('memberWeekPlan').innerHTML = Array.from({length:6},(_,index)=>{
+    const planDay = index+1;
+    const dayWorkouts = allWorkouts.filter(workout=>Number(workout.day_no)===planDay);
+    const focus = dayWorkouts[0]?.focus || 'Plan not assigned';
+    return `<div class="plan-day ${planDay===dayNo?'today':''}"><small>DAY ${planDay}${planDay===dayNo?' · TODAY':''}</small><strong>${escapeHtml(focus)}</strong><span>${dayWorkouts.length} exercise${dayWorkouts.length===1?'':'s'}</span></div>`;
+  }).join('');
+
+  const achievements = [
+    {label:'First step',unlocked:logs.length>0},
+    {label:'3-day streak',unlocked:streak>=3},
+    {label:'7-day warrior',unlocked:streak>=7},
+    {label:'10 workouts',unlocked:logs.length>=10},
+    {label:'Gym regular',unlocked:monthVisits>=12},
+    {label:'Plan crusher',unlocked:completion===100}
+  ];
+  document.getElementById('memberAchievements').innerHTML = achievements.map(item=>`<div class="achievement ${item.unlocked?'unlocked':''}">${item.unlocked?'✓':'○'} ${item.label}</div>`).join('');
+
+  const recent = document.getElementById('memberRecentProgress');
+  recent.innerHTML = logs.length ? logs.slice(0,5).map(log=>{
+    const workout = log.gym_workouts || {};
+    const detail = workout.type === 'cardio' ? `${log.actual_time_minutes || 0} min · ${log.actual_rounds || 0} rounds` : `${log.actual_weight || 0} kg · ${log.actual_reps || 0} reps`;
+    return `<div class="activity-item"><div class="activity-avatar">✓</div><div class="activity-copy"><strong>${escapeHtml(workout.name || 'Workout')}</strong><small>${escapeHtml(detail)} · ${new Date(log.completed_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</small></div><span class="status-pill">DONE</span></div>`;
+  }).join('') : '<div class="empty-state">Complete your first workout to start your progress story.</div>';
 }
 
 async function saveMember(){
@@ -999,13 +1306,14 @@ async function saveMember(){
   document.getElementById('memberPhone').value = '';
   document.getElementById('memberFee').value = '';
   document.getElementById('memberPassword').value = '';
+  toggleFormCard('memberFormCard',true);
+  notify(`${name} added successfully`);
 
   loadMembers();
   loadDashboard();
 }
 
 async function loadMembers(){
-
   const search = document.getElementById('searchInput').value.trim();
 
   let query = sb
@@ -1024,34 +1332,47 @@ async function loadMembers(){
     return;
   }
 
-  const div = document.getElementById('memberList');
-  div.innerHTML = '';
-
-  data.forEach(m => {
-
-    const expired = new Date(m.expiry_date) < new Date();
-
-    div.innerHTML += `
-      <div class="member">
-        <strong>${String(m.name || '').toUpperCase()}</strong><br>
-        <small>${m.phone}</small><br><br>
-
-        Plan : ${m.plan}<br>
-        Fee : ₹${m.monthly_fee}<br>
-        Join : ${m.join_date}<br>
-        Expiry : ${m.expiry_date}<br>
-
-        <strong style="color:${expired ? '#ef4444':'#22c55e'}">
-          ${expired ? 'EXPIRED':'ACTIVE'}
-        </strong>
-
-        <div class="actions">
-          <button onclick="renewMember(${m.id})">Renew</button>
-          <button class="deleteBtn" onclick="deleteMember(${m.id})">Delete</button>
-        </div>
-      </div>
-    `;
+  const today = todayText();
+  const sevenDays = new Date(`${today}T00:00:00`);
+  sevenDays.setDate(sevenDays.getDate()+7);
+  const sevenDaysText = new Date(sevenDays.getTime()-sevenDays.getTimezoneOffset()*60000).toISOString().split('T')[0];
+  const filtered = data.filter(member=>{
+    const expired = !member.expiry_date || member.expiry_date < today;
+    if(memberStatusFilter === 'active') return !expired;
+    if(memberStatusFilter === 'expired') return expired;
+    if(memberStatusFilter === 'expiring') return !expired && member.expiry_date <= sevenDaysText;
+    return true;
   });
+  const div = document.getElementById('memberList');
+  document.getElementById('memberListSummary').innerHTML = `<strong>${filtered.length}</strong> member${filtered.length === 1 ? '' : 's'} shown`;
+  if(!filtered.length){
+    div.innerHTML = '<div class="card empty-state">No members match this view.</div>';
+    return;
+  }
+  div.innerHTML = filtered.map(member=>{
+    const expired = !member.expiry_date || member.expiry_date < today;
+    const phoneDigits = String(member.phone || '').replace(/\D/g,'');
+    const whatsappPhone = phoneDigits.length === 10 ? `91${phoneDigits}` : phoneDigits;
+    const reminder = encodeURIComponent(`Hello ${member.name || ''}, this is a reminder from Vajra Gym. Your membership ${expired ? 'has expired' : `expires on ${member.expiry_date}`}. Please contact us to renew.`);
+    return `<div class="member member-pro">
+      <div class="member-main"><div class="member-avatar">${escapeHtml(member.name?.charAt(0) || 'M')}</div><div class="member-info"><strong>${escapeHtml(String(member.name || '').toUpperCase())}</strong><small>${escapeHtml(member.phone || 'No phone')}</small></div><span class="member-badge ${expired ? 'expired':'active'}">${expired ? 'EXPIRED':'ACTIVE'}</span></div>
+      <div class="member-meta"><div><small>Plan</small><strong>${escapeHtml(member.plan || '-')}</strong></div><div><small>Fee</small><strong>${formatCurrency(member.monthly_fee)}</strong></div><div><small>Expires</small><strong>${escapeHtml(member.expiry_date || '-')}</strong></div></div>
+      <div class="actions"><button onclick="renewMember(${member.id})">Renew</button><button class="whatsappBtn" onclick="window.open('https://wa.me/${whatsappPhone}?text=${reminder}','_blank')">WhatsApp</button><button class="deleteBtn" onclick="deleteMember(${member.id})">Delete</button></div>
+    </div>`;
+  }).join('');
+}
+
+async function exportMembersCsv(){
+  const { data,error } = await sb.from('gym_members').select('*').order('name');
+  if(error){ notify(error.message,'error'); return; }
+  const columns = ['name','phone','plan','monthly_fee','join_date','expiry_date','status'];
+  const csv = [columns.join(','),...data.map(row=>columns.map(column=>`"${String(row[column] ?? '').replace(/"/g,'""')}"`).join(','))].join('\n');
+  const url = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  const link = document.createElement('a');
+  link.href=url; link.download=`vajra-members-${todayText()}.csv`; link.click();
+  URL.revokeObjectURL(url);
+  closeActionSheet();
+  notify('Member list exported');
 }
 
 async function deleteMember(id){
@@ -1070,13 +1391,19 @@ async function deleteMember(id){
 
   loadMembers();
   loadDashboard();
+  notify('Member deleted');
 }
 
 async function renewMember(id){
 
-  const months = prompt("Enter renewal months");
+  const months = prompt("Renew for how many months?", "1");
 
   if(!months) return;
+  const renewalMonths = Number.parseInt(months,10);
+  if(!Number.isInteger(renewalMonths) || renewalMonths < 1 || renewalMonths > 36){
+    notify('Enter a renewal period from 1 to 36 months','error');
+    return;
+  }
 
   const { data } = await sb
     .from('gym_members')
@@ -1084,8 +1411,9 @@ async function renewMember(id){
     .eq('id',id)
     .single();
 
-  const expiry = new Date(data.expiry_date);
-  expiry.setMonth(expiry.getMonth() + parseInt(months));
+  const currentExpiry = data.expiry_date && data.expiry_date >= todayText() ? data.expiry_date : todayText();
+  const expiry = new Date(`${currentExpiry}T12:00:00`);
+  expiry.setMonth(expiry.getMonth() + renewalMonths);
 
   const newExpiry = expiry.toISOString().split('T')[0];
 
@@ -1099,45 +1427,114 @@ async function renewMember(id){
 
   loadMembers();
   loadDashboard();
+  notify(`Membership renewed for ${renewalMonths} month${renewalMonths === 1 ? '' : 's'}`);
 }
 
 async function loadDashboard(){
+  const today = todayText();
+  const now = new Date();
+  const monthStart = `${today.slice(0,7)}-01`;
+  const weekStartDate = new Date(`${today}T12:00:00`);
+  weekStartDate.setDate(weekStartDate.getDate()-6);
+  const weekStart = weekStartDate.toISOString().split('T')[0];
+  const retentionStartDate = new Date(`${today}T12:00:00`);
+  retentionStartDate.setDate(retentionStartDate.getDate()-30);
+  const retentionStart = retentionStartDate.toISOString().split('T')[0];
+  const nextWeek = new Date(`${today}T00:00:00`);
+  nextWeek.setDate(nextWeek.getDate() + 7);
+  const nextWeekText = new Date(nextWeek.getTime() - nextWeek.getTimezoneOffset()*60000).toISOString().split('T')[0];
 
-  const { data } = await sb
-    .from('gym_members')
-    .select('*');
+  const [membersResult,paymentsResult,attendanceResult,workoutsResult] = await Promise.all([
+    sb.from('gym_members').select('*').order('expiry_date',{ascending:true}),
+    sb.from('gym_payments').select('amount,payment_date').gte('payment_date',monthStart).lte('payment_date',today),
+    sb.from('gym_attendance').select('*,gym_members(name,phone)').gte('attendance_date',retentionStart).lte('attendance_date',today).order('check_in_time',{ascending:false}),
+    sb.from('gym_workout_logs').select('id').gte('completed_at',`${monthStart}T00:00:00`)
+  ]);
 
-  const today = new Date();
+  const members = membersResult.data || [];
+  const payments = paymentsResult.data || [];
+  const attendance = attendanceResult.data || [];
+  const todayVisits = attendance.filter(row=>row.attendance_date === today);
+  const workoutLogs = workoutsResult.data || [];
+  const activeMembers = members.filter(member => member.expiry_date && member.expiry_date >= today);
+  const expiredMembers = members.filter(member => !member.expiry_date || member.expiry_date < today);
+  const expiringMembers = activeMembers.filter(member => member.expiry_date <= nextWeekText);
+  const todayTotal = payments.filter(payment=>payment.payment_date === today).reduce((sum,payment)=>sum+Number(payment.amount || 0),0);
+  const monthTotal = payments.reduce((sum,payment)=>sum+Number(payment.amount || 0),0);
+  const healthPercent = members.length ? Math.round(activeMembers.length / members.length * 100) : 0;
 
-  let active = 0;
-  let expired = 0;
+  document.getElementById('totalMembers').innerText = members.length;
+  document.getElementById('activeMembers').innerText = activeMembers.length;
+  document.getElementById('expiredMembers').innerText = expiredMembers.length;
+  document.getElementById('todayCollection').innerText = todayTotal.toFixed(2);
+  document.getElementById('advancedTotalMembers').innerText = members.length;
+  document.getElementById('advancedActiveMembers').innerText = activeMembers.length;
+  document.getElementById('advancedExpiredMembers').innerText = expiredMembers.length;
+  document.getElementById('advancedTodayCollection').innerText = formatCurrency(todayTotal);
+  document.getElementById('todayAttendance').innerText = todayVisits.length;
+  document.getElementById('activeMembersDetail').innerText = activeMembers.length;
+  document.getElementById('expiringMembers').innerText = expiringMembers.length;
+  document.getElementById('activeRateNote').innerText = `${healthPercent}% membership health`;
+  document.getElementById('monthlyCollectionNote').innerText = `${formatCurrency(monthTotal)} this month`;
+  document.getElementById('workoutActivityNote').innerText = `${workoutLogs.length} workouts this month`;
+  document.getElementById('healthPercent').innerText = `${healthPercent}%`;
+  document.getElementById('healthRing').style.setProperty('--value',healthPercent);
 
-  data.forEach(m=>{
-    if(new Date(m.expiry_date) >= today){
-      active++;
-    }else{
-      expired++;
-    }
+  const hour = now.getHours();
+  document.getElementById('dayGreeting').innerText = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+  document.getElementById('dashboardUserName').innerText = currentUser?.displayName?.split(' ')[0] || 'Coach';
+  document.getElementById('dashboardDate').innerText = now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('liveClock').innerText = now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('todayCheckinLabel').innerText = `${todayVisits.length} VISIT${todayVisits.length === 1 ? '' : 'S'}`;
+
+  const chartDays = Array.from({length:7},(_,index)=>{
+    const date = new Date(`${weekStart}T12:00:00`);
+    date.setDate(date.getDate()+index);
+    const key = date.toISOString().split('T')[0];
+    return {key,label:date.toLocaleDateString('en-IN',{weekday:'short'}).slice(0,1),count:attendance.filter(row=>row.attendance_date === key).length};
   });
+  const maxVisits = Math.max(1,...chartDays.map(day=>day.count));
+  document.getElementById('weeklyAttendanceChart').innerHTML = chartDays.map(day=>`<div class="chart-day" title="${day.count} visits"><div class="chart-bar" style="height:${Math.max(4,day.count/maxVisits*62)}px"></div><small>${day.label}</small></div>`).join('');
 
-  document.getElementById('totalMembers').innerText = data.length;
-  document.getElementById('activeMembers').innerText = active;
-  document.getElementById('expiredMembers').innerText = expired;
+  const watchlist = document.getElementById('expiryWatchlist');
+  watchlist.innerHTML = expiringMembers.length ? expiringMembers.slice(0,5).map(member=>{
+    const days = Math.max(0,Math.ceil((new Date(`${member.expiry_date}T23:59:59`) - now)/86400000));
+    return `<div class="activity-item"><div class="activity-avatar">${escapeHtml(member.name?.charAt(0) || 'M')}</div><div class="activity-copy"><strong>${escapeHtml(member.name)}</strong><small>${escapeHtml(member.phone)} · expires ${escapeHtml(member.expiry_date)}</small></div><span class="status-pill danger">${days}D LEFT</span></div>`;
+  }).join('') : '<div class="empty-state">No renewals due in the next 7 days.</div>';
 
-  const d = new Date().toISOString().split('T')[0];
+  const activityList = document.getElementById('todayActivityList');
+  activityList.innerHTML = todayVisits.length ? todayVisits.slice(0,8).map(row=>{
+    const name = row.gym_members?.name || 'Member';
+    return `<div class="activity-item"><div class="activity-avatar">${escapeHtml(name.charAt(0))}</div><div class="activity-copy"><strong>${escapeHtml(name)}</strong><small>${new Date(row.check_in_time).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})} · ${escapeHtml(row.marked_by || 'SELF')}</small></div><span class="status-pill">IN GYM</span></div>`;
+  }).join('') : '<div class="empty-state">No check-ins yet today.</div>';
 
-  const { data:payments } = await sb
-    .from('gym_payments')
-    .select('*')
-    .eq('payment_date',d);
-
-  let total = 0;
-
-  payments.forEach(p=>{
-    total += Number(p.amount || 0);
+  const lastVisitByMember = new Map();
+  attendance.forEach(row=>{
+    const id = String(row.member_id || '');
+    if(id && (!lastVisitByMember.has(id) || row.attendance_date > lastVisitByMember.get(id))) lastVisitByMember.set(id,row.attendance_date);
   });
+  const fourteenDaysAgo = new Date(`${today}T12:00:00`);
+  fourteenDaysAgo.setDate(fourteenDaysAgo.getDate()-14);
+  const fourteenDaysText = fourteenDaysAgo.toISOString().split('T')[0];
+  const riskMembers = activeMembers.map(member=>({member,lastVisit:lastVisitByMember.get(String(member.id)) || null,isExpiring:member.expiry_date <= nextWeekText})).filter(item=>item.isExpiring || !item.lastVisit || item.lastVisit < fourteenDaysText).sort((a,b)=>Number(b.isExpiring)-Number(a.isExpiring)).slice(0,6);
+  document.getElementById('riskCountLabel').innerText = `${riskMembers.length} NEED ATTENTION`;
+  document.getElementById('retentionRadar').innerHTML = riskMembers.length ? riskMembers.map(item=>{
+    const reason = item.isExpiring ? `Expires ${item.member.expiry_date}` : item.lastVisit ? `Last visit ${item.lastVisit}` : 'No visit in 30 days';
+    const phone = String(item.member.phone || '').replace(/\D/g,'');
+    const target = phone.length===10 ? `91${phone}` : phone;
+    const message = encodeURIComponent(`Hi ${item.member.name}, we miss you at Vajra Gym! Your coach is ready to help you get back on track.`);
+    return `<div class="activity-item"><div class="activity-avatar">${escapeHtml(item.member.name?.charAt(0) || 'M')}</div><div class="activity-copy"><strong>${escapeHtml(item.member.name)}</strong><small>${escapeHtml(reason)}</small></div><button class="filter-chip" onclick="window.open('https://wa.me/${target}?text=${message}','_blank')">Message</button></div>`;
+  }).join('') : '<div class="empty-state">Excellent—no active members currently show a retention warning.</div>';
 
-  document.getElementById('todayCollection').innerText = total.toFixed(2);
+  const peakDay = chartDays.reduce((best,day)=>day.count>best.count?day:best,chartDays[0]);
+  const averagePerActive = activeMembers.length ? monthTotal/activeMembers.length : 0;
+  const insights = [
+    {icon:'₹',title:`${formatCurrency(averagePerActive)} revenue per active member`,detail:`Based on ${formatCurrency(monthTotal)} collected this month.`},
+    {icon:'↗',title:`${healthPercent}% membership health`,detail:healthPercent>=80?'Your active-member ratio is healthy.':`${expiredMembers.length} expired memberships are available for a renewal campaign.`},
+    {icon:'⚡',title:`${peakDay.count} visits on your strongest recent day`,detail:`Use this pattern to plan staff coverage and equipment availability.`},
+    {icon:'◎',title:`${workoutLogs.length} workout records this month`,detail:workoutLogs.length?`Members are logging an average of ${(workoutLogs.length/Math.max(1,activeMembers.length)).toFixed(1)} sessions each.`:'Encourage members to save workouts so coaches can track progress.'}
+  ];
+  document.getElementById('ownerInsightList').innerHTML = insights.map(item=>`<div class="insight-item"><div class="insight-icon">${item.icon}</div><div class="insight-copy"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.detail)}</small></div></div>`).join('');
 }
 
 async function loadPaymentMembers(){
@@ -1170,7 +1567,7 @@ async function savePayment(){
     return;
   }
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = todayText();
 
   const { error } = await sb
     .from('gym_payments')
@@ -1186,11 +1583,12 @@ async function savePayment(){
   }
 
   document.getElementById('paymentAmount').value = '';
+  toggleFormCard('paymentFormCard',true);
 
   loadPayments();
   loadDashboard();
 
-  alert("Payment Saved");
+  notify('Payment saved successfully');
 }
 
 async function loadPayments(){
@@ -1205,40 +1603,38 @@ async function loadPayments(){
     .limit(20);
 
   const div = document.getElementById('paymentList');
-
-  div.innerHTML = '';
-
-  data.forEach(p=>{
-
-    div.innerHTML += `
-      <div class="member">
-        <strong>${String(p.gym_members?.name || '').toUpperCase()}</strong><br>
-        <small>${p.gym_members?.phone || ''}</small><br><br>
-
-        Amount : ₹${p.amount}<br>
-        Date : ${p.payment_date}
-      </div>
-    `;
-  });
+  const monthKey = todayText().slice(0,7);
+  const visibleMonthTotal = data.filter(payment=>String(payment.payment_date || '').startsWith(monthKey)).reduce((sum,payment)=>sum+Number(payment.amount || 0),0);
+  document.getElementById('paymentPageSummary').innerText = `${formatCurrency(visibleMonthTotal)} in recent records this month`;
+  if(!data.length){ div.innerHTML='<div class="card empty-state">No payments recorded yet.</div>'; return; }
+  div.innerHTML = data.map(payment=>{
+    const name = String(payment.gym_members?.name || 'Member').toUpperCase();
+    return `<div class="member member-pro payment-pro"><div class="member-avatar">${escapeHtml(name.charAt(0))}</div><div class="member-info"><strong>${escapeHtml(name)}</strong><small>${escapeHtml(payment.gym_members?.phone || '')} · ${escapeHtml(payment.payment_date)}</small></div><div class="payment-amount"><strong>${formatCurrency(payment.amount)}</strong><small>PAID</small></div></div>`;
+  }).join('');
 }
 
 async function markAttendance(memberId, source){
   if(!memberId) return;
 
   const now = new Date();
+  const attendanceDate = todayText();
+  const { data:existing } = await sb.from('gym_attendance').select('id').eq('member_id',memberId).eq('attendance_date',attendanceDate).limit(1).maybeSingle();
+  if(existing) return { duplicate:true };
 
   const { error } = await sb
     .from('gym_attendance')
     .insert([{
       member_id:memberId,
-      attendance_date:todayText(),
+      attendance_date:attendanceDate,
       check_in_time:now.toISOString(),
       marked_by:source || currentUser?.username || 'APP'
     }]);
 
   if(error){
     console.log(error);
+    return { error };
   }
+  return { saved:true };
 }
 
 async function loadAttendancePage(){
@@ -1277,9 +1673,10 @@ async function markAttendanceForSelectedMember(){
     return;
   }
 
-  await markAttendance(memberId, currentUser?.username || 'STAFF');
+  const result = await markAttendance(memberId, currentUser?.username || 'STAFF');
   await loadAttendance();
-  alert('Attendance Marked');
+  if(result?.duplicate) notify('This member is already checked in today','error');
+  else if(result?.saved) notify('Attendance marked');
 }
 
 async function loadAttendance(){
@@ -1298,24 +1695,14 @@ async function loadAttendance(){
   }
 
   const div = document.getElementById('attendanceList');
-  div.innerHTML = '';
-
   if(!data.length){
-    div.innerHTML = '<div class="muted">No attendance found</div>';
+    div.innerHTML = '<div class="empty-state">No attendance found</div>';
     return;
   }
-
-  data.forEach(row => {
-    div.innerHTML += `
-      <div class="member">
-        <strong>${String(row.gym_members?.name || '').toUpperCase()}</strong><br>
-        <small>${row.gym_members?.phone || ''}</small><br><br>
-        Date : ${row.attendance_date}<br>
-        Time : ${new Date(row.check_in_time).toLocaleTimeString()}<br>
-        Marked By : ${row.marked_by || ''}
-      </div>
-    `;
-  });
+  div.innerHTML = data.map(row=>{
+    const name = String(row.gym_members?.name || 'Member').toUpperCase();
+    return `<div class="member member-pro payment-pro"><div class="member-avatar">${escapeHtml(name.charAt(0))}</div><div class="member-info"><strong>${escapeHtml(name)}</strong><small>${escapeHtml(row.attendance_date)} · ${new Date(row.check_in_time).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</small></div><span class="status-pill">${escapeHtml(row.marked_by || 'APP')}</span></div>`;
+  }).join('');
 }
 
 async function loadWorkoutPage(){
@@ -1335,6 +1722,8 @@ async function loadWorkoutPage(){
 
   if(isMember){
     pickerWrap.classList.add('hidden');
+    const weekday = new Date().getDay();
+    document.getElementById('workoutViewDay').value = String(weekday === 0 ? 1 : Math.min(6,weekday));
 
     if(!currentUser?.memberId) return;
 
@@ -1558,6 +1947,7 @@ async function loadSixDayPlan(){
 }
 
 async function editWorkout(id){
+  toggleFormCard('workoutEditorCard',false);
   if(currentUser.role === 'member'){
     alert('Only staff or owner can edit workouts');
     return;
@@ -2055,7 +2445,23 @@ async function loadWorkoutHistory(){
 }
 
 document.getElementById('joinDate').value =
-  new Date().toISOString().split('T')[0];
+  todayText();
+
+document.getElementById('loginUsername').addEventListener('keydown',event=>{
+  if(event.key === 'Enter') document.getElementById('loginPassword').focus();
+});
+document.getElementById('loginPassword').addEventListener('keydown',event=>{
+  if(event.key === 'Enter') login();
+});
+
+window.addEventListener('beforeinstallprompt',event=>{
+  event.preventDefault();
+  deferredInstallPrompt = event;
+});
+
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(console.log));
+}
 
 async function initApp(){
   logout();
