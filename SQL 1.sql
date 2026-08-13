@@ -1,6 +1,7 @@
 
 create table if not exists gym_members(
     id bigserial primary key,
+    admission_number integer unique,
     name text not null,
     phone text unique,
     monthly_fee numeric(12,2) default 0,
@@ -149,6 +150,9 @@ with check (true);
 create index if not exists idx_gym_members_phone
 on gym_members(phone);
 
+create index if not exists idx_gym_members_admission
+on gym_members(admission_number);
+
 create index if not exists idx_gym_members_name
 on gym_members(name);
 
@@ -169,6 +173,13 @@ on gym_workouts(done);
 
 alter table gym_workouts
 add column if not exists day_no integer default 1;
+
+alter table gym_members
+add column if not exists admission_number integer;
+
+create unique index if not exists idx_gym_members_admission_unique
+on gym_members(admission_number)
+where admission_number is not null;
 
 alter table gym_workouts
 add column if not exists focus text;

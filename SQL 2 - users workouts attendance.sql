@@ -8,6 +8,13 @@ create table if not exists gym_users(
     created_at timestamptz default now()
 );
 
+alter table gym_members
+add column if not exists admission_number integer;
+
+create unique index if not exists idx_gym_members_admission_unique
+on gym_members(admission_number)
+where admission_number is not null;
+
 create table if not exists gym_workouts(
     id bigserial primary key,
     member_id bigint not null references gym_members(id) on delete cascade,

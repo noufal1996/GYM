@@ -1,11 +1,11 @@
-# Vajra Gym ERP deployment
+# Unique Gym ERP deployment
 
 ## Quick setup
 
 1. Open the Supabase SQL editor.
 2. Run `SQL 1.sql`. It contains the complete idempotent schema, indexes, seed accounts, workout templates, curated videos, and announcements table.
 3. Serve this folder through HTTPS. Do not deploy by opening the HTML through `file://` because installability and the service worker require HTTP/HTTPS.
-4. Open `vajra_gym_erp.html`, sign in, and publish a test member announcement.
+4. Open `unique_gym_erp.html`, sign in, and publish a test member announcement.
 5. Install the app from the browser menu on member and staff devices.
 
 `SQL 2 - users workouts attendance.sql` is retained as a focused upgrade script for older databases. New installations only need `SQL 1.sql`.

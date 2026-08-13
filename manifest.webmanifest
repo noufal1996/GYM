@@ -1,8 +1,8 @@
 {
-  "name": "Vajra Gym ERP",
-  "short_name": "Vajra Gym",
+  "name": "Unique Gym ERP",
+  "short_name": "Unique Gym",
   "description": "Mobile gym membership, payments, attendance and workout management.",
-  "start_url": "./vajra_gym_erp.html",
+  "start_url": "./unique_gym_erp.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
@@ -10,7 +10,7 @@
   "theme_color": "#07100d",
   "icons": [
     {
-      "src": "vajra-icon.svg",
+      "src": "unique-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
